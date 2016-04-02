@@ -1,0 +1,11 @@
+/.cache-main
+/.classpath
+/.project
+/dev*
+/.externalToolBuilders/
+/.settings/
+/project/project/
+/project/target/
+/src/main/webapp/WEB-INF/classes/
+/src/main/webapp/WEB-INF/lib/
+/target/
