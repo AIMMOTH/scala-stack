@@ -37,11 +37,6 @@
       <version>2.5</version>
       <scope>provided</scope>
     </dependency>
-    <dependency>
-      <groupId>com.google.appengine</groupId>
-      <artifactId>appengine-endpoints</artifactId>
-      <version>${appengine.version}</version>
-    </dependency>
 
     <!-- Scala -->
     <dependency>
@@ -54,12 +49,6 @@
       <artifactId>scalatags_2.11</artifactId>
       <version>0.5.4</version>
     </dependency>
-    <dependency>
-      <groupId>com.github.japgolly.scalacss</groupId>
-      <artifactId>core_2.11</artifactId>
-      <version>0.4.0</version>
-    </dependency>
-
 
     <!-- Scala JS -->
     <dependency>
@@ -74,31 +63,9 @@
     </dependency>
 
     <dependency>
-      <groupId>javax.inject</groupId>
-      <artifactId>javax.inject</artifactId>
-      <version>1</version>
-    </dependency>
-    <dependency>
-      <groupId>javax.jdo</groupId>
-      <artifactId>jdo-api</artifactId>
-      <version>3.1</version>
-    </dependency>
-
-
-    <dependency>
       <groupId>commons-codec</groupId>
       <artifactId>commons-codec</artifactId>
       <version>1.4</version>
-    </dependency>
-    <dependency>
-      <groupId>com.googlecode.objectify</groupId>
-      <artifactId>objectify</artifactId>
-      <version>5.1.12</version>
-    </dependency>
-    <dependency>
-      <groupId>com.google.code.gson</groupId>
-      <artifactId>gson</artifactId>
-      <version>2.4</version>
     </dependency>
 
     <!-- Test Dependencies -->
@@ -207,29 +174,7 @@
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-war-plugin</artifactId>
         <version>2.4</version>
-        <configuration>
-          <!-- <archiveClasses>true</archiveClasses> -->
-          <webXml>${project.build.directory}/generated-sources/appengine-endpoints/WEB-INF/web.xml</webXml>
-          <webResources>
-            <!-- in order to interpolate version from pom into appengine-web.xml -->
-            <!-- <resource> -->
-            <!-- <directory>${basedir}/src/main/webapp/WEB-INF</directory> -->
-            <!-- <filtering>false</filtering> -->
-            <!-- <targetPath>WEB-INF</targetPath> -->
-            <!-- </resource> -->
-            <resource>
-              <!-- this is relative to the pom.xml directory -->
-              <directory>${project.build.directory}/generated-sources/appengine-endpoints</directory>
-              <!-- the list has a default value of ** -->
-              <includes>
-                <include>WEB-INF/*.discovery</include>
-                <include>WEB-INF/*.api</include>
-              </includes>
-            </resource>
-          </webResources>
-        </configuration>
       </plugin>
-
       <plugin>
         <groupId>com.google.appengine</groupId>
         <artifactId>appengine-maven-plugin</artifactId>
@@ -240,19 +185,12 @@
           <version>${app.version}</version>
           <!-- Comment in the below snippet to bind to all IPs instead of 
             just localhost -->
-          <!-- address>0.0.0.0</address> <port>8080</port -->
-          <!-- Comment in the below snippet to enable local debugging with 
-            a remote debugger like those included with Eclipse or IntelliJ -->
-          <!-- jvmFlags> <jvmFlag>-agentlib:jdwp=transport=dt_socket,address=8000,server=y,suspend=n</jvmFlag> 
-            </jvmFlags -->
+          <address>0.0.0.0</address>
+          <port>8081</port>
+          <jvmFlags>
+            <jvmFlag>-agentlib:jdwp=transport=dt_socket,address=8000,server=y,suspend=n</jvmFlag>
+          </jvmFlags>
         </configuration>
-        <executions>
-          <execution>
-            <goals>
-              <goal>endpoints_get_discovery_doc</goal>
-            </goals>
-          </execution>
-        </executions>
       </plugin>
     </plugins>
   </build>
