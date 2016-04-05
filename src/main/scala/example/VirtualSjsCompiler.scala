@@ -1,14 +1,11 @@
 package example
 
 import java.io.{PrintWriter, Writer}
-
-//import akka.util.ByteString
 import org.scalajs.core.tools.io._
 import org.scalajs.core.tools.linker.Linker
 import org.scalajs.core.tools.logging._
 import org.scalajs.core.tools.sem.Semantics
 import org.slf4j.LoggerFactory
-
 import scala.async.Async.async
 import scala.collection.mutable
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -23,6 +20,7 @@ import scala.tools.nsc.reporters.{ConsoleReporter, StoreReporter}
 import scala.tools.nsc.typechecker.Analyzer
 import scala.tools.nsc.util.ClassPath.JavaContext
 import scala.tools.nsc.util._
+import java.io.File
 
 class Compiler(classPath: VirtualClasspath, env: String) { self =>
   val log = LoggerFactory.getLogger(getClass)
@@ -34,21 +32,21 @@ class Compiler(classPath: VirtualClasspath, env: String) { self =>
     * Converts Scalac's weird Future type
     * into a standard scala.concurrent.Future
     */
-  def toFuture[T](func: Response[T] => Unit): Future[T] = {
-    val r = new Response[T]
-    Future {func(r); r.get.left.get}
-  }
+//  def toFuture[T](func: Response[T] => Unit): Future[T] = {
+//    val r = new Response[T]
+//    Future {func(r); r.get.left.get}
+//  }
 
   /**
     * Converts a bunch of bytes into Scalac's weird VirtualFile class
     */
-  def makeFile(src: Array[Byte]) = {
-    val singleFile = new io.VirtualFile("ScalaFiddle.scala")
-    val output = singleFile.output
-    output.write(src)
-    output.close()
-    singleFile
-  }
+//  def makeFile(src: Array[Byte]) = {
+//    val singleFile = new io.VirtualFile("ScalaFiddle.scala")
+//    val output = singleFile.output
+//    output.write(src)
+//    output.close()
+//    singleFile
+//  }
 
   def inMemClassloader = {
     new ClassLoader(this.getClass.getClassLoader) {
@@ -130,13 +128,12 @@ class Compiler(classPath: VirtualClasspath, env: String) { self =>
       case None => throw new IllegalArgumentException(s"Invalid template $template")
     }
   }
-
-  def compile(templateId: String, src: String, logger: String => Unit = _ => ()): Option[Seq[VirtualScalaJSIRFile]] = {
-
-//    val template = getTemplate(templateId)
-//    val fullSource = template.fullSource(src)
-//    log.debug("Compiling source:\n" + fullSource)
-//    val singleFile = makeFile(fullSource.getBytes("UTF-8"))
+  
+  implicit class Pipeable[T](t: T){
+    def |>[V](f: T => V): V = f(t)
+  }
+    
+  def compile(logger: String => Unit = _ => ()): Option[Seq[VirtualScalaJSIRFile]] = {
 
     val (settings, reporter, vd, jCtx, jDirs) = initGlobalBits(logger)
     val compiler = new nsc.Global(settings, reporter) with InMemoryGlobal {
@@ -152,8 +149,7 @@ class Compiler(classPath: VirtualClasspath, env: String) { self =>
     }
 
     val run = new compiler.Run()
-//    run.compileFiles(List(singleFile))
-    run.compile(List("example.Main"))
+    run.compile(List("/example/Main.scala"))
 
     if (vd.iterator.isEmpty) None
     else {
@@ -168,6 +164,8 @@ class Compiler(classPath: VirtualClasspath, env: String) { self =>
       Some(things.toSeq)
     }
   }
+
+  def apply() = compile().map(_ |> fastOpt _ |> export)
 
   def export(output: VirtualJSFile): String =
     output.content
