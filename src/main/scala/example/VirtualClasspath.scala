@@ -4,11 +4,11 @@ import java.io._
 import java.nio.file.Files
 import java.util.zip.ZipInputStream
 
-import akka.actor.ActorSystem
-import akka.http.scaladsl.Http
-import akka.http.scaladsl.model._
-import akka.stream.ActorMaterializer
-import akka.stream.scaladsl.FileIO
+//import akka.actor.ActorSystem
+//import akka.http.scaladsl.Http
+//import akka.http.scaladsl.model._
+//import akka.stream.ActorMaterializer
+//import akka.stream.scaladsl.FileIO
 import org.scalajs.core.tools.io._
 import org.slf4j.LoggerFactory
 
@@ -43,8 +43,9 @@ class VirtualClasspath {
   val baseLibs = Seq(
     s"/scala-library-${VirtualConfig.scalaVersion}.jar",
     s"/scala-reflect-${VirtualConfig.scalaVersion}.jar",
-    s"/scalajs-library_${VirtualConfig.scalaMainVersion}-${VirtualConfig.scalaJSVersion}.jar",
-    s"/page_sjs${VirtualConfig.scalaJSMainVersion}_${VirtualConfig.scalaMainVersion}-${VirtualConfig.version}.jar"
+    s"/scalajs-library_${VirtualConfig.scalaMainVersion}-${VirtualConfig.scalaJSVersion}.jar"
+//    ,
+//    s"/page_sjs${VirtualConfig.scalaJSMainVersion}_${VirtualConfig.scalaMainVersion}-${VirtualConfig.version}.jar"
   )
 
   val repoSJSRE = """([^ %]+) *%%% *([^ %]+) *% *([^ %]+)""".r
@@ -93,6 +94,7 @@ class VirtualClasspath {
     log.debug("Loading files...")
     // load all external libs in parallel using spray-client
     val jarFiles = baseLibs.par.map { name =>
+      log.debug(s"Loading $name ...")
       val stream = getClass.getResourceAsStream(name)
       log.debug(s"Loading resource $name")
       if (stream == null) {

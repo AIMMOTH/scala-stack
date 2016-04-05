@@ -10,5 +10,13 @@
   <servlet-mapping>
     <servlet-name>builder</servlet-name>
     <url-pattern>/*</url-pattern>
+  </servlet-mapping>  
+  <servlet>
+    <servlet-name>javascript</servlet-name>
+    <servlet-class>example.JavascriptBuilder</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>javascript</servlet-name>
+    <url-pattern>/javascript.js</url-pattern>
   </servlet-mapping>
 </web-app>

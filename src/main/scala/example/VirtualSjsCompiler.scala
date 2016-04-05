@@ -22,7 +22,16 @@ import scala.tools.nsc.util.ClassPath.JavaContext
 import scala.tools.nsc.util._
 import java.io.File
 
-class Compiler(classPath: VirtualClasspath, env: String) { self =>
+object VirtualSjsCompiler {
+  
+  def apply() = {
+    new VirtualSjsCompiler(new VirtualClasspath, "") match {
+      case compiler => compiler()
+    }
+  }
+}
+
+class VirtualSjsCompiler(classPath: VirtualClasspath, env: String) { self =>
   val log = LoggerFactory.getLogger(getClass)
   val sjsLogger = new Log4jLogger()
   val blacklist = Set("<init>")
@@ -122,12 +131,12 @@ class Compiler(classPath: VirtualClasspath, env: String) { self =>
     (settings, reporter, vd, jCtx, jDirs)
   }
 
-  def getTemplate(template: String) = {
-    VirtualConfig.templates.get(template) match {
-      case Some(t) => t
-      case None => throw new IllegalArgumentException(s"Invalid template $template")
-    }
-  }
+//  def getTemplate(template: String) = {
+//    VirtualConfig.templates.get(template) match {
+//      case Some(t) => t
+//      case None => throw new IllegalArgumentException(s"Invalid template $template")
+//    }
+//  }
   
   implicit class Pipeable[T](t: T){
     def |>[V](f: T => V): V = f(t)

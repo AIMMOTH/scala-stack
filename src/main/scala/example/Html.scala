@@ -12,7 +12,7 @@ object Html {
       head(
         title2("All Scala!"),
         style2(`type` := "text/css")(style.render),
-        script(src := "sbt-for-scala-js-build-fastopt.js")),
+        script(src := "javascript.js")),
       body(
         h1("All Scala!"),
         p(backgroundColor := "green")("Push the red button below for an alert!"),
