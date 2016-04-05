@@ -1,58 +1,60 @@
 package example
 
-import scala.reflect.io
-import scala.reflect.runtime.Settings
-import java.io.PrintWriter
-import java.io.InputStreamReader
-import scala.reflect.io.VirtualDirectory
-import java.io.ByteArrayInputStream
-import java.util.zip.ZipInputStream
-import scala.reflect.runtime.Settings
-import java.io.PrintWriter
-import com.google.appengine.repackaged.org.apache.lucene.analysis.Analyzer
-import java.io.InputStreamReader
-import scala.reflect.io.VirtualDirectory
-import java.io.ByteArrayInputStream
-import java.util.zip.ZipInputStream
-import java.util.zip.ZipInputStream
-import java.io.ByteArrayInputStream
-import scala.reflect.io.Streamable
-import scala.util.Random
-import scala.tools.nsc
-import org.scalajs.core.tools.io.MemVirtualJSFile
-import org.scalajs.core.tools.io.MemVirtualSerializedScalaJSIRFile
-import org.scalajs.core.tools.io.VirtualJSFile
-import org.scalajs.core.tools.io.VirtualScalaJSIRFile
-import org.scalajs.core.tools.sem.Semantics
-import org.scalajs.core.tools.io.WritableMemVirtualJSFile
-import scala.reflect.runtime.Settings
+import java.io.{PrintWriter, Writer}
+
+//import akka.util.ByteString
+import org.scalajs.core.tools.io._
 import org.scalajs.core.tools.linker.Linker
-import scala.tools.nsc.util.JavaClassPath
-import scala.tools.nsc.backend.JavaPlatform
-import scala.tools.nsc.util.DirectoryClassPath
-import scala.tools.nsc.util.ClassPath.JavaContext
-import scala.collection.mutable
-import scala.tools.nsc.plugins.Plugin
-import scala.tools.nsc.Settings
-import java.io.Writer
-import scala.tools.nsc.reporters.ConsoleReporter
 import org.scalajs.core.tools.logging._
+import org.scalajs.core.tools.sem.Semantics
 import org.slf4j.LoggerFactory
 
-class VirtualSjsCompiler { self =>
+import scala.async.Async.async
+import scala.collection.mutable
+import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.Future
+import scala.reflect.io
+import scala.tools.nsc
+import scala.tools.nsc.Settings
+import scala.tools.nsc.backend.JavaPlatform
+import scala.tools.nsc.interactive.Response
+import scala.tools.nsc.plugins.Plugin
+import scala.tools.nsc.reporters.{ConsoleReporter, StoreReporter}
+import scala.tools.nsc.typechecker.Analyzer
+import scala.tools.nsc.util.ClassPath.JavaContext
+import scala.tools.nsc.util._
 
-//  val log = Logger.getLogger(classOf[VirtualSjsCompiler].getName())
+class Compiler(classPath: VirtualClasspath, env: String) { self =>
   val log = LoggerFactory.getLogger(getClass)
   val sjsLogger = new Log4jLogger()
-  val classPath = new VirtualClasspath
-  val env = "unknown"
+  val blacklist = Set("<init>")
   val extLibs = VirtualConfig.environments.getOrElse(env, Nil)
+
+  /**
+    * Converts Scalac's weird Future type
+    * into a standard scala.concurrent.Future
+    */
+  def toFuture[T](func: Response[T] => Unit): Future[T] = {
+    val r = new Response[T]
+    Future {func(r); r.get.left.get}
+  }
+
+  /**
+    * Converts a bunch of bytes into Scalac's weird VirtualFile class
+    */
+  def makeFile(src: Array[Byte]) = {
+    val singleFile = new io.VirtualFile("ScalaFiddle.scala")
+    val output = singleFile.output
+    output.write(src)
+    output.close()
+    singleFile
+  }
 
   def inMemClassloader = {
     new ClassLoader(this.getClass.getClassLoader) {
       val classCache = mutable.Map.empty[String, Option[Class[_]]]
       override def findClass(name: String): Class[_] = {
-//        log.debug("Looking for Class " + name)
+        log.debug("Looking for Class " + name)
         val fileName = name.replace('.', '/') + ".class"
         val res = classCache.getOrElseUpdate(
           name,
@@ -65,10 +67,10 @@ class VirtualSjsCompiler { self =>
         )
         res match {
           case None =>
-//            log.debug("Not Found Class " + name)
+            log.debug("Not Found Class " + name)
             throw new ClassNotFoundException()
           case Some(cls) =>
-//            log.debug("Found Class " + name)
+            log.debug("Found Class " + name)
             cls
         }
       }
@@ -104,18 +106,29 @@ class VirtualSjsCompiler { self =>
 
     settings.outputDirs.setSingleOutput(vd)
     val writer = new Writer {
-      var inner = new StringBuilder()
+      val sb = new StringBuilder();
+//      var inner = ByteString()
       def write(cbuf: Array[Char], off: Int, len: Int): Unit = {
-        inner.append(new String(cbuf.map(_.toByte), off, len))
+//        inner = inner ++ ByteString.fromArray(cbuf.map(_.toByte), off, len)
+        sb.append(cbuf.map(_.toByte))
       }
       def flush(): Unit = {
-        logger(inner.toString)
-        inner = new StringBuilder()
+        logger(sb.toString())
+//        logger(inner.utf8String)
+//        inner = ByteString()
+        sb.clear()
       }
       def close(): Unit = ()
     }
     val reporter = new ConsoleReporter(settings, scala.Console.in, new PrintWriter(writer))
     (settings, reporter, vd, jCtx, jDirs)
+  }
+
+  def getTemplate(template: String) = {
+    VirtualConfig.templates.get(template) match {
+      case Some(t) => t
+      case None => throw new IllegalArgumentException(s"Invalid template $template")
+    }
   }
 
   def compile(templateId: String, src: String, logger: String => Unit = _ => ()): Option[Seq[VirtualScalaJSIRFile]] = {
@@ -139,7 +152,8 @@ class VirtualSjsCompiler { self =>
     }
 
     val run = new compiler.Run()
-    run.compile(List("Main.scala"))
+//    run.compileFiles(List(singleFile))
+    run.compile(List("example.Main"))
 
     if (vd.iterator.isEmpty) None
     else {
@@ -154,6 +168,9 @@ class VirtualSjsCompiler { self =>
       Some(things.toSeq)
     }
   }
+
+  def export(output: VirtualJSFile): String =
+    output.content
 
   def fastOpt(userFiles: Seq[VirtualScalaJSIRFile]): VirtualJSFile =
     link(userFiles, fullOpt = false)
@@ -190,4 +207,5 @@ class VirtualSjsCompiler { self =>
       self.log.error("Compiling error", t)
     }
   }
+
 }

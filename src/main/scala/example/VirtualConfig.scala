@@ -2,10 +2,18 @@ package example
 
 import java.util.Properties
 
+import akka.http.scaladsl.model.HttpHeader
+import akka.http.scaladsl.model.headers.RawHeader
+import com.typesafe.config.ConfigFactory
+
 import scala.collection.JavaConverters._
 
-object VirtualConfig {
+case class Template(pre: String, post: String) {
+  def fullSource(src: String) = pre + src + post
+}
 
+object VirtualConfig {
+  protected val config = ConfigFactory.load().getConfig("fiddle")
   // read the generated version data
   protected val versionProps = new Properties()
   versionProps.load(getClass.getResourceAsStream("/version.properties"))
@@ -30,10 +38,10 @@ object VirtualConfig {
 
   val libCache = config.getString("libCache")
 
-//  val templates = config.getConfigList("templates").asScala.map { co =>
-//    co.getString("name") -> Template(co.getString("pre"), co.getString("post"))
-//  }.toMap
-//
+  val templates = config.getConfigList("templates").asScala.map { co =>
+    co.getString("name") -> Template(co.getString("pre"), co.getString("post"))
+  }.toMap
+
 //  val httpHeaders: List[HttpHeader] = config.getConfig("httpHeaders").entrySet().asScala.map { entry =>
 //    RawHeader(entry.getKey, entry.getValue.unwrapped().asInstanceOf[String])
 //  }.toList

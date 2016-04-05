@@ -4,6 +4,21 @@ import java.io._
 import java.nio.file.Files
 import java.util.zip.ZipInputStream
 
+import akka.actor.ActorSystem
+import akka.http.scaladsl.Http
+import akka.http.scaladsl.model._
+import akka.stream.ActorMaterializer
+import akka.stream.scaladsl.FileIO
+import org.scalajs.core.tools.io._
+import org.slf4j.LoggerFactory
+
+import scala.collection.mutable
+import scala.concurrent.duration._
+import scala.concurrent.{Await, Future}
+import scala.reflect.io.{Streamable, VirtualDirectory}
+import java.nio.file.Files
+import java.util.zip.ZipInputStream
+
 import org.scalajs.core.tools.io._
 import org.slf4j.LoggerFactory
 
@@ -18,6 +33,9 @@ import scala.reflect.io.{Streamable, VirtualDirectory}
   * scala-compile and scalajs-tools
   */
 class VirtualClasspath {
+//  implicit val system = ActorSystem()
+//  implicit val materializer = ActorMaterializer()
+//  implicit val ec = system.dispatcher
 
   val log = LoggerFactory.getLogger(getClass)
   val timeout = 60.seconds
@@ -49,13 +67,26 @@ class VirtualClasspath {
     val name = uri.split('/').last
     // check if it has been loaded already
     val f = new File(VirtualConfig.libCache, name)
-    if (f.exists()) {
+//    if (f.exists()) {
       log.debug(s"Loading $name from ${VirtualConfig.libCache}")
       (name, Files.readAllBytes(f.toPath))
-    } else {
-      log.debug(s"Loading $name from $uri")
-      f.getParentFile.mkdirs()
-    }
+//    } else {
+//      log.debug(s"Loading $name from $uri")
+//      f.getParentFile.mkdirs()
+//      Http().singleRequest(HttpRequest(uri = uri)).flatMap { response =>
+//        val source = response.entity.dataBytes
+//        // save to cache
+//        val sink = FileIO.toFile(f)
+//        source.runWith(sink).map { ioResponse =>
+//          log.debug(s"Storing $name with ${ioResponse.count} bytes to cache")
+//          (name, Files.readAllBytes(f.toPath))
+//        }
+//      } recover {
+//        case e: Exception =>
+//          log.debug(s"Error loading $uri: $e")
+//          throw e
+//      }
+//    }
   }
 
   val commonLibraries = {
@@ -86,9 +117,9 @@ class VirtualClasspath {
     * External libraries loaded from repository
     */
   val extLibraries = {
-    Await.result(Future.sequence(VirtualConfig.extLibs.map { case (name, ref) =>
-      loadExtLib(ref).map(name -> _)
-    }), timeout).toMap
+    VirtualConfig.extLibs.map { case (name, ref) =>
+      (name -> loadExtLib(ref))
+    }
   }
 
   /**
@@ -137,7 +168,7 @@ class VirtualClasspath {
     */
   val commonLibraries4compiler =
     commonLibraries.map { case (name, data) => lib4compiler(name, data) }
-
+    
   val extLibraries4compiler =
     extLibraries.map { case (key, (name, data)) => key -> lib4compiler(name, data) }
 
@@ -146,6 +177,7 @@ class VirtualClasspath {
     */
   val commonLibraries4linker =
     commonLibraries.map { case (name, data) => lib4linker(name, data) }
+  
   val extLibraries4linker =
     extLibraries.map { case (key, (name, data)) => key -> lib4linker(name, data) }
 
