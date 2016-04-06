@@ -3,6 +3,12 @@
   version="2.5"
   xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd">
   
+    <!-- Webapp listener -->
+  <listener>
+    <listener-class>
+      example.WebappInit
+    </listener-class>
+  </listener>
   <servlet>
     <servlet-name>builder</servlet-name>
     <servlet-class>example.Builder</servlet-class>

@@ -8,9 +8,9 @@ import java.util.Properties
 
 import scala.collection.JavaConverters._
 
-case class Template(pre: String, post: String) {
-  def fullSource(src: String) = pre + src + post
-}
+//case class Template(pre: String, post: String) {
+//  def fullSource(src: String) = pre + src + post
+//}
 
 object VirtualConfig {
 //  protected val config = ConfigFactory.load().getConfig("fiddle")
@@ -18,16 +18,19 @@ object VirtualConfig {
 //  protected val versionProps = new Properties()
 //  versionProps.load(getClass.getResourceAsStream("/version.properties"))
 
-  val interface = "0.0.0.0"
-  val port = 8080
-  val analyticsID = "UA-74405486-1"
-  val helpUrl = "https://github.com/ochrons/scala-js-fiddle/blob/embeddable/UsersGuide.md"
+//  val interface = "0.0.0.0"
+//  val port = 8080
+//  val analyticsID = "UA-74405486-1"
+//  val helpUrl = "https://github.com/ochrons/scala-js-fiddle/blob/embeddable/UsersGuide.md"
 
   val clientFiles = List("/client-fastopt.js")
 
-  val extLibs = Map("dom" -> "org.scala-js %%% scalajs-dom % 0.9.0",
-    "scalatags" -> "com.lihaoyi %%% scalatags % 0.5.4",
-    "async" -> "org.scala-lang.modules %% scala-async % 0.9.5").map { entry =>
+  val extLibs = Map(
+//    "dom" -> "org.scala-js %%% scalajs-dom % 0.9.0",
+    "scalatags" -> "com.lihaoyi %%% scalatags % 0.5.4"
+//    ,
+//    "async" -> "org.scala-lang.modules %% scala-async % 0.9.5"
+    ).map { entry =>
     entry._1 -> entry._2
   }.toMap
 
@@ -36,8 +39,8 @@ object VirtualConfig {
 //  }.toMap
   val environments = Map("default" -> List("dom", "scalatags", "async"))
 
-  val extJS = List("https://ajax.googleapis.com/ajax/libs/jquery/2.2.2/jquery.min.js")
-  val extCSS = Nil
+//  val extJS = List("https://ajax.googleapis.com/ajax/libs/jquery/2.2.2/jquery.min.js")
+//  val extCSS = Nil
 
   val libCache = "target/extlibs"
 

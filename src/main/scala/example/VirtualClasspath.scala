@@ -1,31 +1,21 @@
 package example
 
 import java.io._
-import java.nio.file.Files
 import java.util.zip.ZipInputStream
-
-//import akka.actor.ActorSystem
-//import akka.http.scaladsl.Http
-//import akka.http.scaladsl.model._
-//import akka.stream.ActorMaterializer
-//import akka.stream.scaladsl.FileIO
 import org.scalajs.core.tools.io._
 import org.slf4j.LoggerFactory
-
 import scala.collection.mutable
 import scala.concurrent.duration._
 import scala.concurrent.{Await, Future}
 import scala.reflect.io.{Streamable, VirtualDirectory}
-import java.nio.file.Files
 import java.util.zip.ZipInputStream
-
 import org.scalajs.core.tools.io._
 import org.slf4j.LoggerFactory
-
 import scala.collection.mutable
 import scala.concurrent.duration._
 import scala.concurrent.{Await, Future}
 import scala.reflect.io.{Streamable, VirtualDirectory}
+import com.google.common.io.ByteStreams
 
 /**
   * Loads the jars that make up the classpath of the scala-js-fiddle
@@ -36,9 +26,9 @@ class VirtualClasspath {
 //  implicit val system = ActorSystem()
 //  implicit val materializer = ActorMaterializer()
 //  implicit val ec = system.dispatcher
-
+  
   val log = LoggerFactory.getLogger(getClass)
-  val timeout = 60.seconds
+//  val timeout = 60.seconds
 
   val baseLibs = Seq(
     s"/scala-library-${VirtualConfig.scalaVersion}.jar",
@@ -91,17 +81,19 @@ class VirtualClasspath {
   }
 
   val commonLibraries = {
-    log.debug("Loading files...")
+//    log.debug(s"Loading files ${baseLibs}")
     // load all external libs in parallel using spray-client
-    val jarFiles = baseLibs.par.map { name =>
-      log.debug(s"Loading $name ...")
-      val stream = getClass.getResourceAsStream(name)
-      log.debug(s"Loading resource $name")
-      if (stream == null) {
-        throw new Exception(s"Classpath loading failed, jar $name not found")
-      }
-      name -> Streamable.bytes(stream)
-    }.seq
+
+//    val jarFiles = baseLibs.par.map { name =>
+//      log.debug(s"Loading $name ...")
+//      val stream = getClass.getResourceAsStream(name)
+//      log.debug(s"Loading resource $name")
+//      if (stream == null) {
+//        throw new Exception(s"Classpath loading failed, jar $name not found")
+//      }
+////      name -> Streamable.bytes(stream)
+//      name -> ByteStreams.toByteArray(stream)
+//    }.seq
 
     val bootFiles = for {
       prop <- Seq(/*"java.class.path", */ "sun.boot.class.path")
@@ -112,7 +104,7 @@ class VirtualClasspath {
       path.split("/").last -> vfile.toByteArray()
     }
     log.debug("Files loaded...")
-    jarFiles ++ bootFiles
+    JarFiles.jarFiles ++ bootFiles
   }
 
   /**
