@@ -25,14 +25,14 @@ object VirtualConfig {
 
   val clientFiles = List("/client-fastopt.js")
 
-  val extLibs = Map(
+//  val extLibs = Map(
 //    "dom" -> "org.scala-js %%% scalajs-dom % 0.9.0",
-    "scalatags" -> "com.lihaoyi %%% scalatags % 0.5.4"
+//    "scalatags" -> "com.lihaoyi %%% scalatags % 0.5.4"
 //    ,
 //    "async" -> "org.scala-lang.modules %% scala-async % 0.9.5"
-    ).map { entry =>
-    entry._1 -> entry._2
-  }.toMap
+//    ).map { entry =>
+//    entry._1 -> entry._2
+//  }.toMap
 
 //  val environments = config.getConfig("environments").entrySet().asScala.map { entry =>
 //    entry.getKey -> entry.getValue.unwrapped().asInstanceOf[java.util.List[String]].asScala.toList
