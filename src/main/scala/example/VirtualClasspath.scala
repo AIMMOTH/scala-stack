@@ -53,32 +53,14 @@ class VirtualClasspath {
     }
   }
 
-  def loadExtLib(ref: String) = {
-    val uri = buildRepoUri(ref)
-    val name = uri.split('/').last
-    // check if it has been loaded already
-    val f = new File(VirtualConfig.libCache, name)
-//    if (f.exists()) {
-      log.debug(s"Loading $name from ${VirtualConfig.libCache}")
-      (name, Files.readAllBytes(f.toPath))
-//    } else {
-//      log.debug(s"Loading $name from $uri")
-//      f.getParentFile.mkdirs()
-//      Http().singleRequest(HttpRequest(uri = uri)).flatMap { response =>
-//        val source = response.entity.dataBytes
-//        // save to cache
-//        val sink = FileIO.toFile(f)
-//        source.runWith(sink).map { ioResponse =>
-//          log.debug(s"Storing $name with ${ioResponse.count} bytes to cache")
-//          (name, Files.readAllBytes(f.toPath))
-//        }
-//      } recover {
-//        case e: Exception =>
-//          log.debug(s"Error loading $uri: $e")
-//          throw e
-//      }
-//    }
-  }
+//  def loadExtLib(ref: String) = {
+//    val uri = buildRepoUri(ref)
+//    val name = uri.split('/').last
+//    // check if it has been loaded already
+//    val f = new File(VirtualConfig.libCache, name)
+//    log.debug(s"Loading $name from ${VirtualConfig.libCache}")
+//    (name, Files.readAllBytes(f.toPath))
+//  }
 
   val commonLibraries = {
 //    log.debug(s"Loading files ${baseLibs}")
@@ -110,11 +92,11 @@ class VirtualClasspath {
   /**
     * External libraries loaded from repository
     */
-  val extLibraries = {
-    VirtualConfig.extLibs.map { case (name, ref) =>
-      (name -> loadExtLib(ref))
-    }
-  }
+//  val extLibraries = {
+//    VirtualConfig.extLibs.map { case (name, ref) =>
+//      (name -> loadExtLib(ref))
+//    }
+//  }
 
   /**
     * The loaded files shaped for Scalac to use
@@ -163,8 +145,8 @@ class VirtualClasspath {
   val commonLibraries4compiler =
     commonLibraries.map { case (name, data) => lib4compiler(name, data) }
     
-  val extLibraries4compiler =
-    extLibraries.map { case (key, (name, data)) => key -> lib4compiler(name, data) }
+//  val extLibraries4compiler =
+//    extLibraries.map { case (key, (name, data)) => key -> lib4compiler(name, data) }
 
   /**
     * In memory cache of all the jars used in the linker.
@@ -172,18 +154,20 @@ class VirtualClasspath {
   val commonLibraries4linker =
     commonLibraries.map { case (name, data) => lib4linker(name, data) }
   
-  val extLibraries4linker =
-    extLibraries.map { case (key, (name, data)) => key -> lib4linker(name, data) }
+//  val extLibraries4linker =
+//    extLibraries.map { case (key, (name, data)) => key -> lib4linker(name, data) }
 
   val linkerCaches = mutable.Map.empty[List[String], Seq[IRFileCache.VirtualRelativeIRFile]]
 
   def compilerLibraries(extLibs: List[String]) = {
-    commonLibraries4compiler ++ extLibs.flatMap(extLibraries4compiler.get)
+    commonLibraries4compiler
+//    ++ extLibs.flatMap(extLibraries4compiler.get)
   }
 
   def linkerLibraries(extLibs: List[String]) = {
     linkerCaches.getOrElseUpdate(extLibs, {
-      val loadedJars = commonLibraries4linker ++ extLibs.flatMap(extLibraries4linker.get)
+      val loadedJars = commonLibraries4linker
+//      ++ extLibs.flatMap(extLibraries4linker.get)
       val cache = (new IRFileCache).newCache
       val res = cache.cached(loadedJars)
       log.debug("Loaded scalaJSClassPath")
