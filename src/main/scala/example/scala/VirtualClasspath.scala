@@ -155,11 +155,22 @@ class VirtualClasspath {
 //      o.close()
 //    }
     val tokens = name.split("/")
-    val dir = new VirtualDirectory(".", None)
-    val dirs = for (t <- tokens.dropRight(1)) yield
-      dir.subdirectoryNamed(t).asInstanceOf[VirtualDirectory]
+    val dir = new VirtualDirectory(tokens.head, None)
+    def r(parent : VirtualDirectory, folders : Array[String]) : VirtualDirectory = {
+      if (folders.isEmpty) {
+        parent
+      } else {
+        val p = parent.subdirectoryNamed(folders.head).asInstanceOf[VirtualDirectory]
+        r(p, folders.tail)
+      }
+    }
+    val folder = r(dir, tokens.dropRight(1).tail)
+//    val dirs = for (t <- tokens.tail.dropRight(1)) yield
+//      dir.subdirectoryNamed(t).asInstanceOf[VirtualDirectory]
 
-    val f = dirs.last.fileNamed(tokens.last)
+    val f = folder.fileNamed(tokens.last)
+    if (f.name == "Object.class")
+      log.debug(s"${f.name} in ${f.canonicalPath}")
     val o = f.bufferedOutput
     o.write(bytes)
     o.close()
