@@ -1,4 +1,4 @@
-package example
+package example.scala
 
 import scala.collection.JavaConverters._
 import java.io._
@@ -129,19 +129,22 @@ class VirtualClasspath {
   /**
     * The loaded files shaped for Scalac to use
     */
-  def lib4compiler(name: String, zip: ZipFile) = {
-//    log.debug(s"Loading $name for Scalac with size ${bytes.length}")
-//    val in = new ZipInputStream(new ByteArrayInputStream(bytes))
-    val entries = zip.entries.asScala.takeWhile(_ != null)
-//      .map((_, Streamable.bytes(in)))
+  def lib4compiler(name: String, bytes: Array[Byte]) = {
+    log.debug(s"Loading $name for Scalac")
+    val in = new ZipInputStream(new ByteArrayInputStream(bytes))
+    val entries = Iterator
+      .continually(in.getNextEntry)
+      .takeWhile(_ != null)
+      .map{
+        case e =>
+          (e, Streamable.bytes(in))
+      }
 
     val dir = new VirtualDirectory(name, None)
     for {
-//      (e, data) <- entries
-      e <- entries
+      (e, data) <- entries
       if !e.isDirectory
     } {
-      log.debug(s"Zip entry ${e.getName}")
       val tokens = e.getName.split("/")
       var d = dir
       for (t <- tokens.dropRight(1)) {
@@ -149,9 +152,7 @@ class VirtualClasspath {
       }
       val f = d.fileNamed(tokens.last)
       val o = f.bufferedOutput
-//      o.write(data)
-//      o.write(e.getExtra)
-      o.write(ByteStreams.toByteArray(zip.getInputStream(e)))
+      o.write(data)
       o.close()
     }
     dir
@@ -160,9 +161,9 @@ class VirtualClasspath {
   /**
     * The loaded files shaped for Scala-Js-Tools to use
     */
-  def lib4linker(name: String, zip: ZipFile) = {
+  def lib4linker(name: String, bytes : Array[Byte]) = {
     val jarFile = (new MemVirtualBinaryFile(name) with VirtualJarFile)
-      .withContent(Array[Byte]())
+      .withContent(bytes)
       .withVersion(Some(name)) // unique through the lifetime of the server
     IRFileCache.IRContainer.Jar(jarFile)
   }

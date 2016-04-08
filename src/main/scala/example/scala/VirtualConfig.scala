@@ -1,4 +1,4 @@
-package example
+package example.scala
 
 import java.util.Properties
 

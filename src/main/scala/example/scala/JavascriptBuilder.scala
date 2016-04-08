@@ -1,4 +1,4 @@
-package example
+package example.scala
 
 import scalatags.stylesheet.Sheet
 import javax.servlet.http.HttpServletResponse

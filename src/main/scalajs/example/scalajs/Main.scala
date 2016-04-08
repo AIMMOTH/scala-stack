@@ -1,4 +1,4 @@
-package example
+package example.scalajs
 
 import scala.scalajs.js.JSApp
 

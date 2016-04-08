@@ -1,4 +1,4 @@
-package example
+package example.scala
 
 import java.io.{PrintWriter, Writer}
 import org.scalajs.core.tools.io._
@@ -6,6 +6,9 @@ import org.scalajs.core.tools.linker.Linker
 import org.scalajs.core.tools.logging._
 import org.scalajs.core.tools.sem.Semantics
 import org.slf4j.LoggerFactory
+import example.scala.VirtualClasspath
+import example.scala.VirtualConfig
+import example.scala.VirtualSjsCompiler
 import scala.async.Async.async
 import scala.collection.mutable
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -21,6 +24,7 @@ import scala.tools.nsc.typechecker.Analyzer
 import scala.tools.nsc.util.ClassPath.JavaContext
 import scala.tools.nsc.util._
 import java.io.File
+import scala.reflect.io.VirtualDirectory
 
 object VirtualSjsCompiler {
   
@@ -158,7 +162,18 @@ class VirtualSjsCompiler(classPath: VirtualClasspath, env: String) { self =>
     }
 
     val run = new compiler.Run()
-    run.compile(List("/example/Main.scala"))
+    val source = new VirtualDirectory("example/scalajs", None)
+    val files = JarFiles.sourceFiles.map{
+      case f => 
+        val file = source.fileNamed(f._1)
+        val b = file.bufferedOutput
+        b.write(f._2)
+        b.close()
+        file
+    }
+    
+//    run.compile(List("/example/Main.scala"))
+    run.compileFiles(files.toList)
 
     if (vd.iterator.isEmpty) None
     else {

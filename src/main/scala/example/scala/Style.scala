@@ -1,4 +1,4 @@
-package example
+package example.scala
 
 import scalatags.stylesheet._
 import scalatags.Text.all._

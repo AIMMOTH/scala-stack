@@ -1,4 +1,4 @@
-package example
+package example.scala
 
 import javax.servlet.http.HttpServlet
 import javax.servlet.http.HttpServletRequest
