@@ -159,10 +159,11 @@ class VirtualSjsCompiler(classPath: VirtualClasspath, env: String) { self =>
     }
 
     val run = new compiler.Run()
-    val source = new VirtualDirectory("example/scalajs", None)
+//    val source = new VirtualDirectory("", None)
     val files = JarFiles.sourceFiles.map{
       case f =>
-        val file = source.fileNamed(f._1)
+//        val file = source.fileNamed(f._1)
+        val file = new scala.reflect.io.VirtualFile(f._1)
         val b = file.bufferedOutput
         b.write(f._2)
         b.close()
@@ -170,7 +171,25 @@ class VirtualSjsCompiler(classPath: VirtualClasspath, env: String) { self =>
     }
 
 //    run.compile(List("/example/Main.scala"))
-    run.compileFiles(files.toList)
+    val s = new scala.reflect.io.VirtualFile("test.scala")
+    val b = s.bufferedOutput
+    b.write("""
+      package test
+      @JSExport
+      object Test extends JSApp {
+        def main() : Unit = {
+        println("Hello!!")
+        }
+        @JSExport
+        def click() = {
+          alert("Hello!")
+        }
+      }
+      """.getBytes("UTF-8"))
+      b.close()
+
+//    run.compileFiles(files.toList)
+      run.compileFiles(List(s))
 
     if (vd.iterator.isEmpty) None
     else {
