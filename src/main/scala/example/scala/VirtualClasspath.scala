@@ -195,7 +195,8 @@ class VirtualClasspath {
     */
   val commonLibraries4compiler = {
     log.debug("Load files into Virtual directory for compilation ...")
-    commonLibraries.map { case (name, data) => lib4compiler(name, data) }
+//    commonLibraries.map { case (name, data) => lib4compiler(name, data) }
+    JarFiles.jarFiles
   }
 
 //  val extLibraries4compiler =
@@ -205,7 +206,7 @@ class VirtualClasspath {
     * In memory cache of all the jars used in the linker.
     */
   val commonLibraries4linker =
-    commonLibraries.map { case (name, data) => lib4linker(name, data) }
+    JarFiles.jarBytes.map { case (name, data) => lib4linker(name, data) }
 
 //  val extLibraries4linker =
 //    extLibraries.map { case (key, (name, data)) => key -> lib4linker(name, data) }
