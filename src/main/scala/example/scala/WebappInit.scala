@@ -9,29 +9,41 @@ import java.util.zip.ZipFile
 import javax.servlet.http.HttpServlet
 import javax.servlet.http.HttpServletResponse
 import javax.servlet.http.HttpServletRequest
-    
-class WebappInit extends HttpServlet {
- 
+
+class WebappInit extends ServletContextListener {
+
   val log = Logger.getLogger(classOf[WebappInit].getName())
 
-//  override def contextDestroyed(context :ServletContextEvent) = {
-//    log.info("kthxbye");
-//  }
+  override def contextDestroyed(context :ServletContextEvent) = {
+    log.info("kthxbye");
+  }
 
-//  override def contextInitialized(contextEvent : ServletContextEvent) {
-  override def doPost(request: HttpServletRequest, response: HttpServletResponse) = doGet(request, response)
-  override def doGet (request: HttpServletRequest, response: HttpServletResponse) = {
-    
-    request.getSession().getServletContext match {
+  override def contextInitialized(contextEvent : ServletContextEvent) {
+//  override def doPost(request: HttpServletRequest, response: HttpServletResponse) = doGet(request, response)
+//  override def doGet (request: HttpServletRequest, response: HttpServletResponse) = {
+
+    log.info("Loading files ...")
+
+    contextEvent.getServletContext match {
       case context =>
         val f = context.getResourcePaths("/WEB-INF/classes/libs").asInstanceOf[java.util.Set[String]]
-        JarFiles.files = f.asScala.map(_.substring("/WEB-INF/classes".length)).toSeq
+//        JarFiles.files = f.asScala.map(_.substring("/WEB-INF/classes".length)).toSeq
+
+        def recursive(resource : String) : Set[String] =
+          if (resource.endsWith(".class") || resource.endsWith(".sjsir")) {
+            Set(resource.substring("/WEB-INF/classes".length))
+          } else {
+            val dirs = context.getResourcePaths(resource).asInstanceOf[java.util.Set[String]]
+            dirs.asScala.map(recursive).toSet.flatten
+          }
+
+        JarFiles.files = f.asScala.map(recursive).toSeq.flatten
 
         val source = context.getResourcePaths("/WEB-INF/classes/example/scalajs").asInstanceOf[java.util.Set[String]]
         JarFiles.source = source.asScala.map(_.substring("/WEB-INF/classes".length)).toSeq
-        
-        log.info("all files:" + JarFiles.files.mkString)
-        log.info("all source:" + JarFiles.source.mkString)
+
+//        log.info("all files:" + JarFiles.files.mkString)
+//        log.info("all source:" + JarFiles.source.mkString)
     }
   }
 }
@@ -39,19 +51,17 @@ class WebappInit extends HttpServlet {
 object JarFiles {
 
   val log = Logger.getLogger("JarFiles")
-  
+
   var files : Seq[String] = null
   var source: Seq[String] = null
   lazy val jarFiles : Seq[(String, Array[Byte])] = toBytes(files)
   lazy val sourceFiles : Seq[(String, Array[Byte])] = toBytes(source)
-  
+
   private def toBytes(f : Seq[String]) = { f.map{
-      case file => 
-//        file -> new ZipFile(file)
+      case file =>
         val b = ByteStreams.toByteArray(getClass.getResourceAsStream(file))
-        log.info(s"Loading ${file} with size ${b.length}")
         file -> b
     }.seq
   }
-  
+
 }

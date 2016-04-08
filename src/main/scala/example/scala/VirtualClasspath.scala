@@ -29,7 +29,7 @@ class VirtualClasspath {
 //  implicit val system = ActorSystem()
 //  implicit val materializer = ActorMaterializer()
 //  implicit val ec = system.dispatcher
-  
+
   val log = LoggerFactory.getLogger(getClass)
 //  val timeout = 60.seconds
 
@@ -93,23 +93,23 @@ class VirtualClasspath {
 //    log.debug(s"Loaded ${JarFiles.jarFiles.map(_._1).mkString}")
     JarFiles.jarFiles //++ bootFiles
 //    JarFiles.files.map{
-//      case file => 
+//      case file =>
 //        log.info(s"Loading ${file}")
 //        val buffer = new ByteArrayOutputStream();
 //        val stream = getClass.getResourceAsStream(file)
 //
 //        log.info(s"Stream ${stream}")
-//        
+//
 //        if (stream != null) {
 //          var nRead = 0
 //          val data = Array[Byte]()
-//          
+//
 //          while ((nRead = stream.read(data, 0, data.length)) != -1) {
 //            buffer.write(data, 0, nRead);
 //          }
-//          
+//
 //          buffer.flush();
-//          
+//
 //          file -> buffer.toByteArray()
 //        } else {
 //          file -> Array[Byte]()
@@ -130,31 +130,40 @@ class VirtualClasspath {
     * The loaded files shaped for Scalac to use
     */
   def lib4compiler(name: String, bytes: Array[Byte]) = {
-    log.debug(s"Loading $name for Scalac")
-    val in = new ZipInputStream(new ByteArrayInputStream(bytes))
-    val entries = Iterator
-      .continually(in.getNextEntry)
-      .takeWhile(_ != null)
-      .map{
-        case e =>
-          (e, Streamable.bytes(in))
-      }
+//    val in = new ZipInputStream(new ByteArrayInputStream(bytes))
+//    val entries = Iterator
+//      .continually(in.getNextEntry)
+//      .takeWhile(_ != null)
+//      .map{
+//        case e =>
+//          (e, Streamable.bytes(in))
+//      }
 
-    val dir = new VirtualDirectory(name, None)
-    for {
-      (e, data) <- entries
-      if !e.isDirectory
-    } {
-      val tokens = e.getName.split("/")
-      var d = dir
-      for (t <- tokens.dropRight(1)) {
-        d = d.subdirectoryNamed(t).asInstanceOf[VirtualDirectory]
-      }
-      val f = d.fileNamed(tokens.last)
-      val o = f.bufferedOutput
-      o.write(data)
-      o.close()
-    }
+//    val dir = new VirtualDirectory(name, None)
+//    for {
+//      (e, data) <- entries
+//      if !e.isDirectory
+//    } {
+//      val tokens = e.getName.split("/")
+//      var d = dir
+//      for (t <- tokens.dropRight(1)) {
+//        d = d.subdirectoryNamed(t).asInstanceOf[VirtualDirectory]
+//      }
+//      val f = d.fileNamed(tokens.last)
+//      val o = f.bufferedOutput
+//      o.write(data)
+//      o.close()
+//    }
+    val tokens = name.split("/")
+    val dir = new VirtualDirectory(".", None)
+    val dirs = for (t <- tokens.dropRight(1)) yield
+      dir.subdirectoryNamed(t).asInstanceOf[VirtualDirectory]
+
+    val f = dirs.last.fileNamed(tokens.last)
+    val o = f.bufferedOutput
+    o.write(bytes)
+    o.close()
+
     dir
   }
 
@@ -173,9 +182,11 @@ class VirtualClasspath {
     * memory but is better than reaching all over the filesystem every time we
     * want to do something.
     */
-  val commonLibraries4compiler =
+  val commonLibraries4compiler = {
+    log.debug("Load files into Virtual directory for compilation ...")
     commonLibraries.map { case (name, data) => lib4compiler(name, data) }
-    
+  }
+
 //  val extLibraries4compiler =
 //    extLibraries.map { case (key, (name, data)) => key -> lib4compiler(name, data) }
 
@@ -184,7 +195,7 @@ class VirtualClasspath {
     */
   val commonLibraries4linker =
     commonLibraries.map { case (name, data) => lib4linker(name, data) }
-  
+
 //  val extLibraries4linker =
 //    extLibraries.map { case (key, (name, data)) => key -> lib4linker(name, data) }
 

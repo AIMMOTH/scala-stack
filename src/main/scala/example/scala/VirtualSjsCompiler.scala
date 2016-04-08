@@ -6,9 +6,6 @@ import org.scalajs.core.tools.linker.Linker
 import org.scalajs.core.tools.logging._
 import org.scalajs.core.tools.sem.Semantics
 import org.slf4j.LoggerFactory
-import example.scala.VirtualClasspath
-import example.scala.VirtualConfig
-import example.scala.VirtualSjsCompiler
 import scala.async.Async.async
 import scala.collection.mutable
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -27,7 +24,7 @@ import java.io.File
 import scala.reflect.io.VirtualDirectory
 
 object VirtualSjsCompiler {
-  
+
   def apply() = {
     new VirtualSjsCompiler(new VirtualClasspath, "") match {
       case compiler => compiler()
@@ -141,11 +138,11 @@ class VirtualSjsCompiler(classPath: VirtualClasspath, env: String) { self =>
 //      case None => throw new IllegalArgumentException(s"Invalid template $template")
 //    }
 //  }
-  
+
   implicit class Pipeable[T](t: T){
     def |>[V](f: T => V): V = f(t)
   }
-    
+
   def compile(logger: String => Unit = _ => ()): Option[Seq[VirtualScalaJSIRFile]] = {
 
     val (settings, reporter, vd, jCtx, jDirs) = initGlobalBits(logger)
@@ -164,14 +161,14 @@ class VirtualSjsCompiler(classPath: VirtualClasspath, env: String) { self =>
     val run = new compiler.Run()
     val source = new VirtualDirectory("example/scalajs", None)
     val files = JarFiles.sourceFiles.map{
-      case f => 
+      case f =>
         val file = source.fileNamed(f._1)
         val b = file.bufferedOutput
         b.write(f._2)
         b.close()
         file
     }
-    
+
 //    run.compile(List("/example/Main.scala"))
     run.compileFiles(files.toList)
 
