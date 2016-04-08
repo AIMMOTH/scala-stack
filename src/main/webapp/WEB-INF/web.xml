@@ -4,19 +4,19 @@
   xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd">
   
     <!-- Webapp listener -->
-<!--   <listener> -->
-<!--     <listener-class> -->
-<!--       example.scala.WebappInit -->
-<!--     </listener-class> -->
-<!--   </listener> -->
-  <servlet>
-    <servlet-name>warmup</servlet-name>
-    <servlet-class>example.scala.WebappInit</servlet-class>
-  </servlet>
-  <servlet-mapping>
-    <servlet-name>warmup</servlet-name>
-    <url-pattern>/_ah/warmup</url-pattern>
-  </servlet-mapping>  
+  <listener>
+    <listener-class>
+      example.scala.WebappInit
+    </listener-class>
+  </listener>
+<!--   <servlet> -->
+<!--     <servlet-name>warmup</servlet-name> -->
+<!--     <servlet-class>example.scala.WebappInit</servlet-class> -->
+<!--   </servlet> -->
+<!--   <servlet-mapping> -->
+<!--     <servlet-name>warmup</servlet-name> -->
+<!--     <url-pattern>/_ah/warmup</url-pattern> -->
+<!--   </servlet-mapping>   -->
 
   <servlet>
     <servlet-name>builder</servlet-name>
