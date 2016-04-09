@@ -10,4 +10,6 @@
 /src/main/webapp/WEB-INF/classes/
 /src/main/webapp/WEB-INF/lib/
 /target/
-/src/main/resources/
+/src/main/resources/libs/*.jar
+/src/main/resources/unpacked_libs/*/
+!/src/main/resources/unpacked_libs/instructions.txt

@@ -91,7 +91,7 @@ class VirtualClasspath {
 //    }
 //    log.debug("Files loaded...")
 //    log.debug(s"Loaded ${JarFiles.jarFiles.map(_._1).mkString}")
-    JarFiles.jarFiles //++ bootFiles
+    JarFiles.classes.get._2 //++ bootFiles
 //    JarFiles.files.map{
 //      case file =>
 //        log.info(s"Loading ${file}")
@@ -129,54 +129,9 @@ class VirtualClasspath {
   /**
     * The loaded files shaped for Scalac to use
     */
-  def lib4compiler(name: String, bytes: Array[Byte]) = {
-//    val in = new ZipInputStream(new ByteArrayInputStream(bytes))
-//    val entries = Iterator
-//      .continually(in.getNextEntry)
-//      .takeWhile(_ != null)
-//      .map{
-//        case e =>
-//          (e, Streamable.bytes(in))
-//      }
-
-//    val dir = new VirtualDirectory(name, None)
-//    for {
-//      (e, data) <- entries
-//      if !e.isDirectory
-//    } {
-//      val tokens = e.getName.split("/")
-//      var d = dir
-//      for (t <- tokens.dropRight(1)) {
-//        d = d.subdirectoryNamed(t).asInstanceOf[VirtualDirectory]
-//      }
-//      val f = d.fileNamed(tokens.last)
-//      val o = f.bufferedOutput
-//      o.write(data)
-//      o.close()
-//    }
-    val tokens = name.split("/")
-    val dir = new VirtualDirectory(tokens.head, None)
-    def r(parent : VirtualDirectory, folders : Array[String]) : VirtualDirectory = {
-      if (folders.isEmpty) {
-        parent
-      } else {
-        val p = parent.subdirectoryNamed(folders.head).asInstanceOf[VirtualDirectory]
-        r(p, folders.tail)
-      }
-    }
-    val folder = r(dir, tokens.dropRight(1).tail)
-//    val dirs = for (t <- tokens.tail.dropRight(1)) yield
-//      dir.subdirectoryNamed(t).asInstanceOf[VirtualDirectory]
-
-    val f = folder.fileNamed(tokens.last)
-    if (f.name == "Object.class")
-      log.debug(s"${f.name} in ${f.canonicalPath}")
-    val o = f.bufferedOutput
-    o.write(bytes)
-    o.close()
-
-    dir
-  }
+//  def lib4compiler(name: String, bytes: Array[Byte]) = {
+//
+//  }
 
   /**
     * The loaded files shaped for Scala-Js-Tools to use
@@ -193,11 +148,7 @@ class VirtualClasspath {
     * memory but is better than reaching all over the filesystem every time we
     * want to do something.
     */
-  val commonLibraries4compiler = {
-    log.debug("Load files into Virtual directory for compilation ...")
-//    commonLibraries.map { case (name, data) => lib4compiler(name, data) }
-    JarFiles.jarFiles
-  }
+  val commonLibraries4compiler = JarFiles.classes.get._2
 
 //  val extLibraries4compiler =
 //    extLibraries.map { case (key, (name, data)) => key -> lib4compiler(name, data) }
@@ -206,7 +157,7 @@ class VirtualClasspath {
     * In memory cache of all the jars used in the linker.
     */
   val commonLibraries4linker =
-    JarFiles.jarBytes.map { case (name, data) => lib4linker(name, data) }
+    JarFiles.classes.get._1.map { case (name, data) => lib4linker(name, data) }
 
 //  val extLibraries4linker =
 //    extLibraries.map { case (key, (name, data)) => key -> lib4linker(name, data) }

@@ -112,13 +112,16 @@ class VirtualSjsCompiler(classPath: VirtualClasspath, env: String) { self =>
     val jDirs = classPath.compilerLibraries(extLibs).map(new DirectoryClassPath(_, jCtx)).toVector
     lazy val settings = new Settings
 
+    settings.withErrorFn { x => log.debug(x) }
     settings.outputDirs.setSingleOutput(vd)
     val writer = new Writer {
       val sb = new StringBuilder();
 //      var inner = ByteString()
       def write(cbuf: Array[Char], off: Int, len: Int): Unit = {
 //        inner = inner ++ ByteString.fromArray(cbuf.map(_.toByte), off, len)
-        sb.append(cbuf.map(_.toByte))
+        val s = new String(cbuf.map(_.toByte))
+        sb.append(s)
+        log.debug(s)
       }
       def flush(): Unit = {
         logger(sb.toString())
@@ -160,7 +163,7 @@ class VirtualSjsCompiler(classPath: VirtualClasspath, env: String) { self =>
 
     val run = new compiler.Run()
 //    val source = new VirtualDirectory("", None)
-    val files = JarFiles.sourceFiles.map{
+    val files = JarFiles.sourceFiles.get.map{
       case f =>
 //        val file = source.fileNamed(f._1)
         val file = new scala.reflect.io.VirtualFile(f._1)
@@ -191,8 +194,10 @@ class VirtualSjsCompiler(classPath: VirtualClasspath, env: String) { self =>
 //    run.compileFiles(files.toList)
       run.compileFiles(List(s))
 
-    if (vd.iterator.isEmpty) None
-    else {
+    if (vd.iterator.isEmpty) {
+      log.debug("Could not compile.")
+      None
+    } else {
       val things = for {
         x <- vd.iterator.to[collection.immutable.Traversable]
         if x.name.endsWith(".sjsir")

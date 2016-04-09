@@ -1,0 +1,1 @@
+Unpack each library to separate subfolder. For instance "scala-reflect-2.11.8.jar" into "src/main/resources/unpacked_libs/scala-reflect-2.11.8"
