@@ -38,26 +38,6 @@ class VirtualSjsCompiler(classPath: VirtualClasspath, env: String) { self =>
   val blacklist = Set("<init>")
   val extLibs = VirtualConfig.environments.getOrElse(env, Nil)
 
-  /**
-    * Converts Scalac's weird Future type
-    * into a standard scala.concurrent.Future
-    */
-//  def toFuture[T](func: Response[T] => Unit): Future[T] = {
-//    val r = new Response[T]
-//    Future {func(r); r.get.left.get}
-//  }
-
-  /**
-    * Converts a bunch of bytes into Scalac's weird VirtualFile class
-    */
-//  def makeFile(src: Array[Byte]) = {
-//    val singleFile = new io.VirtualFile("ScalaFiddle.scala")
-//    val output = singleFile.output
-//    output.write(src)
-//    output.close()
-//    singleFile
-//  }
-
   def inMemClassloader = {
     new ClassLoader(this.getClass.getClassLoader) {
       val classCache = mutable.Map.empty[String, Option[Class[_]]]
@@ -66,7 +46,7 @@ class VirtualSjsCompiler(classPath: VirtualClasspath, env: String) { self =>
         val fileName = name.replace('.', '/') + ".class"
         val res = classCache.getOrElseUpdate(
           name,
-          classPath.compilerLibraries(extLibs)
+          JarFiles.classes.get._2
             .map(_.lookupPathUnchecked(fileName, false))
             .find(_ != null).map { f =>
             val data = f.toByteArray
@@ -109,7 +89,7 @@ class VirtualSjsCompiler(classPath: VirtualClasspath, env: String) { self =>
   def initGlobalBits(logger: String => Unit) = {
     val vd = new io.VirtualDirectory("(memory)", None)
     val jCtx = new JavaContext()
-    val jDirs = classPath.compilerLibraries(extLibs).map(new DirectoryClassPath(_, jCtx)).toVector
+    val jDirs = JarFiles.classes.get._2.map(new DirectoryClassPath(_, jCtx)).toVector
     lazy val settings = new Settings
 
     settings.withErrorFn { x => log.debug(x) }
@@ -134,13 +114,6 @@ class VirtualSjsCompiler(classPath: VirtualClasspath, env: String) { self =>
     val reporter = new ConsoleReporter(settings, scala.Console.in, new PrintWriter(writer))
     (settings, reporter, vd, jCtx, jDirs)
   }
-
-//  def getTemplate(template: String) = {
-//    VirtualConfig.templates.get(template) match {
-//      case Some(t) => t
-//      case None => throw new IllegalArgumentException(s"Invalid template $template")
-//    }
-//  }
 
   implicit class Pipeable[T](t: T){
     def |>[V](f: T => V): V = f(t)
