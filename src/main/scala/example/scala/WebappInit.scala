@@ -27,12 +27,12 @@ class WebappInit extends ServletContextListener {
    * Reads files like "/unpacked_libs/unpacked-jar-folder/package/Class.class"
    * into byte array
    */
-  private def toVirtual(f : Seq[(String, Array[Byte])]) = {
-    log.info(s"Loading ${f.size} virtual files ...")
-    f.map {
+  private def toVirtual(tuple : (String, Array[Byte]), drop : Integer = 2) = {
+    tuple match {
       case (file, b) =>
         // Drop "unpackaged_libs" and unpacked jar folder name
-        val tokens = file.dropWhile(_ == '/').split("/").drop(2)
+        val tokens = file.dropWhile(_ == '/').split("/").drop(drop)
+        
         val dir = new VirtualDirectory(tokens.head, None)
         
         def r(parent : VirtualDirectory, folders : Array[String]) : VirtualDirectory = {
@@ -56,16 +56,23 @@ class WebappInit extends ServletContextListener {
         o.close()
   
         dir
-    }.seq
-  }
-
-  def toBytes(f : Seq[String]) = {
-    log.info(s"Loading ${f.size} files to bytes ...")
-    f.map {
-      case file =>
-        (file, ByteStreams.toByteArray(getClass.getResourceAsStream(file)))
     }
   }
+  def unpackZips(tuple : (String, Array[Byte])) : List[VirtualDirectory] = {
+    tuple match {
+      case (name, bytes) => 
+        val in = new ZipInputStream(new ByteArrayInputStream(bytes))
+        Iterator
+          .continually(in.getNextEntry)
+          .takeWhile(_ != null)
+          .filter(!_.isDirectory())
+          .map{ e => (e.getName, Streamable.bytes(in))}
+          .map(toVirtual(_, 0))
+          .toList
+    }
+  }
+
+  def toBytes(file : String) = (file, ByteStreams.toByteArray(getClass.getResourceAsStream(file)))
     
   override def contextDestroyed(context :ServletContextEvent) = {
     log.info("kthxbye");
@@ -105,63 +112,19 @@ class WebappInit extends ServletContextListener {
             .asInstanceOf[java.util.Set[String]]
             .asScala.map(recursive).toSeq.flatten
         }
-        def unpackZips(files : Seq[(String, Array[Byte])]) : Seq[VirtualDirectory] = {
-          log.info(s"Unzipping ${files.length} files ...")
-          files.map {
-            case (name, bytes) =>
-              val in = new ZipInputStream(new ByteArrayInputStream(bytes))
-              val entries = Iterator
-                .continually(in.getNextEntry)
-                .takeWhile(_ != null)
-                .map{
-                  case e =>
-                    (e, Streamable.bytes(in))
-                }
-              val dir = new VirtualDirectory(name, None)
-              for {
-                (e, data) <- entries
-                if !e.isDirectory
-              } {
-                val tokens = e.getName.split("/")
-                val dir = new VirtualDirectory(tokens.head, None)
-                def r(parent : VirtualDirectory, folders : Array[String]) : VirtualDirectory = {
-                  if (folders.isEmpty) {
-                    parent
-                  } else {
-                    val p = parent.subdirectoryNamed(folders.head).asInstanceOf[VirtualDirectory]
-                    r(p, folders.tail)
-                  }
-                }
-                val folder = r(dir, tokens.dropRight(1).tail)
             
-                val f = folder.fileNamed(tokens.last)
-                
-                if (f.name == "Object.class")
-                  log.info(s"${f.name} in ${f.canonicalPath}")
-                  
-                val o = f.bufferedOutput
-                o.write(bytes)
-                o.close()
-            
-                dir
-              }
-              log.info(s"Done reading ${dir.canonicalPath}")
-              dir
-          }
-        }
-        
         if (JarFiles.classes.isEmpty) {
-          toBytes(getCompiledFiles("/WEB-INF/classes", "unpacked_libs")) match {
+          getCompiledFiles("/WEB-INF/classes", "unpacked_libs").map(toBytes) match {
             case bytesSeq =>
-              val virtual = toVirtual(bytesSeq) 
-              val zips = unpackZips(toBytes(getJarFiles("/WEB-INF/classes", "libs")))
+              val virtual = bytesSeq.map(toVirtual(_, 2)) 
+              val zips = getJarFiles("/WEB-INF/classes", "libs").map(toBytes).map(unpackZips).flatten
               JarFiles.classes = Some(Tuple2(bytesSeq, virtual ++ zips))
           }
         }
 
         if (JarFiles.sourceFiles.isEmpty) {
           // Test!
-          JarFiles.sourceFiles = Some(toBytes(getCompiledFiles("/WEB-INF/classes", "example/scalajs")))
+          JarFiles.sourceFiles = Some(getCompiledFiles("/WEB-INF/classes", "example/scalajs").map(toBytes))
         }
     }
   }
