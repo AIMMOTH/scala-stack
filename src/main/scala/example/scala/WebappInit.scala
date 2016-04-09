@@ -24,15 +24,17 @@ class WebappInit extends ServletContextListener {
   val log = LoggerFactory.getLogger(getClass)
 
   /*
-   * Reads files like "/unpacked_libs/unpacked-jar-folder/Class.class"
+   * Reads files like "/unpacked_libs/unpacked-jar-folder/package/Class.class"
    * into byte array
    */
   private def toVirtual(f : Seq[(String, Array[Byte])]) = {
     log.info(s"Loading ${f.size} virtual files ...")
     f.map {
       case (file, b) =>
-        val tokens = file.split("/")
+        // Drop "unpackaged_libs" and unpacked jar folder name
+        val tokens = file.dropWhile(_ == '/').split("/").drop(2)
         val dir = new VirtualDirectory(tokens.head, None)
+        
         def r(parent : VirtualDirectory, folders : Array[String]) : VirtualDirectory = {
           if (folders.isEmpty) {
             parent
@@ -41,13 +43,13 @@ class WebappInit extends ServletContextListener {
             r(p, folders.tail)
           }
         }
-        // Drop "unpacked_libs/unpacked-jar-folder"
-        val folder = r(dir, tokens.dropRight(2).tail)
+        // Drop filename
+        val folder = r(dir, tokens.dropRight(1).tail)
   
         val f = folder.fileNamed(tokens.last)
         
         if (f.name == "Object.class")
-          log.info(s"${f.name} in ${f.canonicalPath}")
+          log.debug(s"Sample: ${f.name} in ${f.canonicalPath}")
           
         val o = f.bufferedOutput
         o.write(b)
@@ -76,13 +78,12 @@ class WebappInit extends ServletContextListener {
         
         def getJarFiles(parent : String, path : String) = {
           val folder = List(parent, path).mkString("/")
+          
           log.info(s"Reading Jar files in $folder")
-          val jars = context.getResourcePaths(folder)
+          
+          context.getResourcePaths(folder)
             .asInstanceOf[java.util.Set[String]]
             .asScala.filter(_.endsWith(".jar")).map(_.substring(parent.length)).toSeq
-            
-          log.info(s"Jar files ${jars.mkString(",")}")
-          jars
         }
         /*
          * Reads resources on context path (src/main/webapp) and recursively returns
