@@ -30,37 +30,43 @@ class WebappInit extends ServletContextListener {
   private def toVirtual(tuple : (String, Array[Byte]), drop : Integer = 2) = {
     tuple match {
       case (file, b) =>
-        // Drop "unpackaged_libs" and unpacked jar folder name
-        val tokens = file.dropWhile(_ == '/').split("/").drop(drop)
-        
-        val dir = new VirtualDirectory(tokens.head, None)
-        
-        def r(parent : VirtualDirectory, folders : Array[String]) : VirtualDirectory = {
-          if (folders.isEmpty) {
-            parent
-          } else {
-            val p = parent.subdirectoryNamed(folders.head).asInstanceOf[VirtualDirectory]
-            r(p, folders.tail)
+        try {
+          // Drop "unpackaged_libs" and unpacked jar folder name
+          val tokens = file.split("/").drop(drop)
+
+          val dir = new VirtualDirectory(tokens.head, None)
+
+          def r(parent : VirtualDirectory, folders : Array[String]) : VirtualDirectory = {
+            if (folders.isEmpty) {
+              parent
+            } else {
+              val p = parent.subdirectoryNamed(folders.head).asInstanceOf[VirtualDirectory]
+              r(p, folders.tail)
+            }
           }
+          // Drop filename
+          val folder = r(dir, tokens.dropRight(1).tail)
+
+          val f = folder.fileNamed(tokens.last)
+
+          if (f.name == "Object.class")
+            log.debug(s"Sample: ${f.name} in ${f.canonicalPath}")
+
+          val o = f.bufferedOutput
+          o.write(b)
+          o.close()
+
+          dir
+        } catch {
+          case e : UnsupportedOperationException =>
+            log.error(s"dropping $drop on $file where tokens are ${file.split("/").mkString(",")}")
+            throw e
         }
-        // Drop filename
-        val folder = r(dir, tokens.dropRight(1).tail)
-  
-        val f = folder.fileNamed(tokens.last)
-        
-        if (f.name == "Object.class")
-          log.debug(s"Sample: ${f.name} in ${f.canonicalPath}")
-          
-        val o = f.bufferedOutput
-        o.write(b)
-        o.close()
-  
-        dir
     }
   }
   def unpackZips(tuple : (String, Array[Byte])) : List[VirtualDirectory] = {
     tuple match {
-      case (name, bytes) => 
+      case (name, bytes) =>
         val in = new ZipInputStream(new ByteArrayInputStream(bytes))
         Iterator
           .continually(in.getNextEntry)
@@ -73,7 +79,7 @@ class WebappInit extends ServletContextListener {
   }
 
   def toBytes(file : String) = (file, ByteStreams.toByteArray(getClass.getResourceAsStream(file)))
-    
+
   override def contextDestroyed(context :ServletContextEvent) = {
     log.info("kthxbye");
   }
@@ -82,22 +88,22 @@ class WebappInit extends ServletContextListener {
 
     contextEvent.getServletContext match {
       case context =>
-        
+
         def getJarFiles(parent : String, path : String) = {
           val folder = List(parent, path).mkString("/")
-          
+
           log.info(s"Reading Jar files in $folder")
-          
+
           context.getResourcePaths(folder)
             .asInstanceOf[java.util.Set[String]]
             .asScala.filter(_.endsWith(".jar")).map(_.substring(parent.length)).toSeq
         }
         /*
          * Reads resources on context path (src/main/webapp) and recursively returns
-         * files 
+         * files
          */
         def getCompiledFiles(parent : String, path : String) = {
-          
+
           def recursive(resource : String) : Set[String] =
             if (resource.endsWith(".class") || resource.endsWith(".sjsir")) {
               Set(resource.substring(parent.length))
@@ -105,18 +111,18 @@ class WebappInit extends ServletContextListener {
               val dirs = context.getResourcePaths(resource).asInstanceOf[java.util.Set[String]]
               dirs.asScala.map(recursive).toSet.flatten
             }
-          
+
           val folder = List(parent, path).mkString("/")
           log.info(s"Reading unpacked folder $folder")
           context.getResourcePaths(folder)
             .asInstanceOf[java.util.Set[String]]
             .asScala.map(recursive).toSeq.flatten
         }
-            
+
         if (JarFiles.classes.isEmpty) {
           getCompiledFiles("/WEB-INF/classes", "unpacked_libs").map(toBytes) match {
             case bytesSeq =>
-              val virtual = bytesSeq.map(toVirtual(_, 2)) 
+              val virtual = bytesSeq.map(toVirtual(_, 3))
               val zips = getJarFiles("/WEB-INF/classes", "libs").map(toBytes).map(unpackZips).flatten
               JarFiles.classes = Some(Tuple2(bytesSeq, virtual ++ zips))
           }
@@ -136,7 +142,7 @@ object JarFiles {
 
   type classesAsBytes = Seq[(String, Array[Byte])]
   type classesAsVirtualFiles = Seq[VirtualDirectory]
-  
+
   var classes : Option[Tuple2[classesAsBytes, classesAsVirtualFiles]] = None
   var sourceFiles : Option[Seq[(String, Array[Byte])]] = None
 

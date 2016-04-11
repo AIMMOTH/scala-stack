@@ -12,6 +12,8 @@ class JavascriptBuilder extends HttpServlet {
 
   override def doGet(request: HttpServletRequest, response: HttpServletResponse) = {
 
+    log.info("Starting compilation ...")
+    
     val script = VirtualSjsCompiler().getOrElse("""//empty""")
 
     log.info(script)
