@@ -80,18 +80,18 @@ class VirtualClasspath {
 //      name -> ByteStreams.toByteArray(stream)
 //    }.seq
 
-//    val bootFiles = for {
-//      prop <- Seq(/*"java.class.path", */ "sun.boot.class.path")
-//      path <- System.getProperty(prop).split(System.getProperty("path.separator"))
-//      vfile = scala.reflect.io.File(path)
-//      if vfile.exists && !vfile.isDirectory
-//    } yield {
-//      log.debug(s"Loading ${vfile}")
-//      path.split("/").last -> Array[Byte]() //vfile.toByteArray()
-//    }
+    val bootFiles = for {
+      prop <- Seq(/*"java.class.path", */ "sun.boot.class.path")
+      path <- System.getProperty(prop).split(System.getProperty("path.separator"))
+      vfile = scala.reflect.io.File(path)
+      if vfile.exists && !vfile.isDirectory
+    } yield {
+      log.debug(s"Loading ${vfile}")
+      path.split("/").last -> Array[Byte]() //vfile.toByteArray()
+    }
 //    log.debug("Files loaded...")
 //    log.debug(s"Loaded ${JarFiles.jarFiles.map(_._1).mkString}")
-    JarFiles.jarFiles //++ bootFiles
+    JarFiles.jarFiles ++ bootFiles
 //    JarFiles.files.map{
 //      case file =>
 //        log.info(s"Loading ${file}")

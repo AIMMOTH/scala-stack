@@ -50,13 +50,13 @@ class VirtualSjsCompiler(classPath: VirtualClasspath, env: String) { self =>
   /**
     * Converts a bunch of bytes into Scalac's weird VirtualFile class
     */
-//  def makeFile(src: Array[Byte]) = {
-//    val singleFile = new io.VirtualFile("ScalaFiddle.scala")
-//    val output = singleFile.output
-//    output.write(src)
-//    output.close()
-//    singleFile
-//  }
+  def makeFile(src: Array[Byte]) = {
+    val singleFile = new io.VirtualFile("ScalaFiddle.scala")
+    val output = singleFile.output
+    output.write(src)
+    output.close()
+    singleFile
+  }
 
   def inMemClassloader = {
     new ClassLoader(this.getClass.getClassLoader) {
@@ -111,14 +111,17 @@ class VirtualSjsCompiler(classPath: VirtualClasspath, env: String) { self =>
     val jCtx = new JavaContext()
     val jDirs = classPath.compilerLibraries(extLibs).map(new DirectoryClassPath(_, jCtx)).toVector
     lazy val settings = new Settings
-
+    settings.deprecation.value = true
+    settings.unchecked.value = true
     settings.outputDirs.setSingleOutput(vd)
     val writer = new Writer {
       val sb = new StringBuilder();
 //      var inner = ByteString()
       def write(cbuf: Array[Char], off: Int, len: Int): Unit = {
 //        inner = inner ++ ByteString.fromArray(cbuf.map(_.toByte), off, len)
-        sb.append(cbuf.map(_.toByte))
+        val line = cbuf.map(_.toByte)
+        log.debug(new String(line))
+        sb.append(line)
       }
       def flush(): Unit = {
         logger(sb.toString())
@@ -161,7 +164,7 @@ class VirtualSjsCompiler(classPath: VirtualClasspath, env: String) { self =>
     val run = new compiler.Run()
     
     val s = new scala.reflect.io.VirtualFile("test.scala")
-    val b = s.bufferedOutput
+    val b = s.output
     b.write("""
       package test
       @JSExport
@@ -175,10 +178,12 @@ class VirtualSjsCompiler(classPath: VirtualClasspath, env: String) { self =>
         }
       }
       """.getBytes("UTF-8"))
+//      b.flush()
       b.close()
 
 //    run.compileFiles(files.toList)
       run.compileFiles(List(s))
+      println("Errors?" + compiler.reporter.hasErrors)
 
     if (vd.iterator.isEmpty) None
     else {

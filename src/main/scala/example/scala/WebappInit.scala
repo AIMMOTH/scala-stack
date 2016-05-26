@@ -24,6 +24,7 @@ class WebappInit extends ServletContextListener {
 //  override def doGet (request: HttpServletRequest, response: HttpServletResponse) = {
 
     log.info("Loading files ...")
+    getClass.getResourceAsStream("scalajs-library_2.11-0.6.8.jar")
 
     contextEvent.getServletContext match {
       case context =>
