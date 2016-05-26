@@ -167,6 +167,8 @@ class VirtualSjsCompiler(classPath: VirtualClasspath, env: String) { self =>
     val b = s.output
     b.write("""
       package test
+      import scala.scalajs.js.JSApp
+      import scala.scalajs.js.annotation.JSExport
       @JSExport
       object Test extends JSApp {
         def main() : Unit = {
@@ -174,13 +176,13 @@ class VirtualSjsCompiler(classPath: VirtualClasspath, env: String) { self =>
         }
         @JSExport
         def click() = {
-          alert("Hello!")
+          println("Hello!")
         }
       }
       """.getBytes("UTF-8"))
 //      b.flush()
       b.close()
-
+      
 //    run.compileFiles(files.toList)
       run.compileFiles(List(s))
       println("Errors?" + compiler.reporter.hasErrors)
@@ -199,7 +201,7 @@ class VirtualSjsCompiler(classPath: VirtualClasspath, env: String) { self =>
     }
   }
 
-  def apply() = compile().map(_ |> fastOpt _ |> export)
+  def apply() = compile().map(_ |> fullOpt _ |> export)
 
   def export(output: VirtualJSFile): String =
     output.content
