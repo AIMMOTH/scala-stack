@@ -20,7 +20,7 @@ object Html {
       body(
         h1("All Scala!"),
         p(backgroundColor := "green")("Push the red button below for an alert!"),
-        button(style.redBackground)(onclick := "example.Alerter().click()")("Press me!"))
+        button(style.redBackground)(onclick := "example.HelloWorld().alert()")("Press me!"))
       )
   }
 }

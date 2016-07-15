@@ -31,13 +31,7 @@ object HelloWorld extends js.JSApp {
     
   override def doGet(request : HttpServletRequest, response : HttpServletResponse) = {
     
-    import scala.collection.JavaConversions._ 
-    
     val compiler = new ScalaJsCompiler
-    val scripts = request.getServletContext.getResourcePaths("/scalajs")
-    val example = request.getServletContext.getResourcePaths("/scalajs/example")
-    val paths = request.getServletContext.getResourcePaths("/scalajs/example")
-    response.getWriter.println(compiler.compileScalaJsString(this.getClass, source, Optimizer.Fast, "/WEB-INF/lib/"))
+    response.getWriter.println(compiler.compileScalaJsString(request.getServletContext, source, Optimizer.Fast,  "/WEB-INF/lib/"))
   }
-    
 }
