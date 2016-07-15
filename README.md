@@ -1,20 +1,23 @@
-# iso-scala
+# ISO SCALA
 
-HTML, JavaScript and CSS from Scala. [Live](http://iso-scala.appspot.com/)
+Backend serve HTML, JavaScript and CSS from Scala! No frontend build (gulp, grun), no files (js, css, html, sass, less)!
 
-## Build
+## Description
 
-Maven is used to run the project and SBT to build the JavaScript
+Backend Scala servlets serve a HTML file build with ScalaTags and ScalaCSS, and a JavaScript hot compiled from Scala JS source read from webapp. 
 
-### JavaScript
+## Environment
 
-Build the JavaScript with SBT. The output will be placed in src/main/webapp
+Maven project with Google Fleixble Environment with Java 8, Servlet 3.1 and Scala 2.11.
 
-1. $ sbt
-2. $ fastOptJS
+## Live
 
-### Webapp
+Check out [live](http://iso-scala.appspot.com/)
 
-Run webapp
+## Run and Deploy
 
-1. $ mvn appengine:devserver
+This project is dependent on a second project [servlet-scalajs-compiler](https://github.com/AIMMOTH/scala-js-compiler/tree/servlet-compiler). Either clone and install it with maven or use copy of JAR included in src/main/resources.
+
+Use maven and run $ mvn gcloud:run or $ mvn gcloud:deploy. Make sure to have GCloud installed and Python on path!
+
+Another way is to compile (use IDE like eclipse) and copy dependencies into webapp, and use the python to run "dev_appserver.py" included in GCloud SDK.
