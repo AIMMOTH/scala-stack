@@ -12,7 +12,7 @@ Maven project with Google Fleixble Environment with Java 8, Servlet 3.1 and Scal
 
 ## Live
 
-Check out [live](http://iso-scala.appspot.com/)
+Check out [live](https://iso-scala-us.appspot.com/)
 
 ## Run and Deploy
 
