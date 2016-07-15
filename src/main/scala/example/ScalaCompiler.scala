@@ -6,30 +6,16 @@ import javax.servlet.http.HttpServletRequest
 import fiddle.ScalaJsCompiler
 import javax.servlet.http.HttpServlet
 import fiddle.Optimizer
+import scala.io.Source
 
 @WebServlet(name = "javascriptCompiler", urlPatterns = Array("/javascript.js"))
 class ScalaCompiler extends HttpServlet {
   
-    val source = """
-package example
-import scala.scalajs.js
-import js.annotation._
-import org.scalajs.dom
-@JSExport
-class Foo(val x: Int) {
-  override def toString(): String = s"Foo($x)"
-}
-@JSExportAll
-object HelloWorld extends js.JSApp {
-  def main(): Unit = {
-    println("Hello world!")
-  }
-  
-  def alert = dom.window.alert("Hello!")
-}
-      """
-    
   override def doGet(request : HttpServletRequest, response : HttpServletResponse) = {
+    
+    val is = request.getServletContext.getResourceAsStream("/scalajs/example/Main.scala")
+    
+    val source = Source.fromInputStream(is).mkString
     
     val compiler = new ScalaJsCompiler
     response.getWriter.println(compiler.compileScalaJsString(request.getServletContext, source, Optimizer.Fast,  "/WEB-INF/lib/"))
