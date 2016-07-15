@@ -5,7 +5,7 @@
     <setting name="java_quickstart" value="true" />
   </beta-settings>
   
-  <application>iso-scala</application>
+  <application>iso-scala-us</application>
   <version>master</version>
   
   <threadsafe>true</threadsafe>
