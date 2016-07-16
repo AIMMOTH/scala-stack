@@ -13,6 +13,9 @@ class JerseyRest {
   
   val gson = new Gson
   
+  /*
+   * http://localhost:8080/api/v1/resource?x=3
+   */
   @GET
   @Produces(Array(MediaType.APPLICATION_JSON))
   def get(@QueryParam("x") x : Int) = gson.toJson(new Resource(x)).toString

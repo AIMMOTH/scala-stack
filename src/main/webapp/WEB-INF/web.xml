@@ -3,6 +3,7 @@
      http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd"
   version="3.1">
 
+  <!-- https://jersey.java.net/nonav/documentation/latest/user-guide.html -->
   <servlet>
     <servlet-name>jersey_web_application</servlet-name>
     <servlet-class>org.glassfish.jersey.servlet.ServletContainer</servlet-class>
