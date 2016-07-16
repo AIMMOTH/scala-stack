@@ -8,7 +8,7 @@ import javax.ws.rs.core.MediaType
 import com.google.gson.Gson
 import javax.ws.rs.QueryParam
 
-@Path("/api/v1/resource")
+@Path("resource")
 class JerseyRest {
   
   val gson = new Gson
