@@ -24,8 +24,8 @@ object Html {
           div(cls := "large-12 columns")(
             h1("All Scala!"),
             p(backgroundColor := "green")("Push the red button below for an alert!"),
-            button(cls := "example-Stylisch-redBackground example-Stylisch-yellowColor")(onclick := "example.HelloWorld().alert()")("Press me!")),
-          p("Source at ")(a(href := "https://github.com/AIMMOTH/iso-scala")("GitHub")),
+            button(cls := "button example-Stylisch-redBackground example-Stylisch-yellowColor")(onclick := "example.HelloWorld().alert()")("Press me (when javascript.js is loaded)!")),
+          p("Source at ")(a(href := "https://github.com/AIMMOTH/iso-scala/tree/angular")("GitHub")),
           div(cls := "callout alert")(h5("This is a callout"), p("It has an easy to override visual style, and is appropriately subdued.")))),
 
       div(attr("ng-controller") := "SimpleController as simple")(
