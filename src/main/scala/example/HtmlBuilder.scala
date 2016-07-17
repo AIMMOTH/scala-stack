@@ -11,22 +11,39 @@ import javax.servlet.annotation.WebServlet
 
 object Html {
 
-  def apply(css : String) = {
+  def apply(css : String, minified : Boolean = false) = {
+    val min = if (minified) ".min" else ""
     html(
       head(
         title2("All Scala!"),
-        style2(`type` := "text/css")(css),
-        script(src := "javascript.js")),
+        link(rel := "stylesheet", href := s"/css/foundation$min.css"),
+        link(rel := "stylesheet", href := "/css/app.css"),
+        style2(`type` := "text/css")(css)
+//        script(src := "javascript.js")
+        ),
       body(
-        h1("All Scala!"),
-        p(backgroundColor := "green")("Push the red button below for an alert!"),
-        button(cls := "example-Stylisch-redBackground")(onclick := "example.HelloWorld().alert()")("Press me!")),
-        p("Source at ")(a(href := "https://github.com/AIMMOTH/iso-scala")("GitHub"))
+        div(cls := "row")(
+          div(cls := "large-12 columns")(
+            h1("All Scala!"),
+            p(backgroundColor := "green")("Push the red button below for an alert!"),
+            button(cls := "example-Stylisch-redBackground example-Stylisch-yellowColor")(onclick := "example.HelloWorld().alert()")("Press me!")),
+            p("Source at ")(a(href := "https://github.com/AIMMOTH/iso-scala")("GitHub")),
+            div(cls := "callout alert")(h5("This is a callout"),p("It has an easy to override visual style, and is appropriately subdued."))
+          )
+        ),
+        
+        
+        // Footer
+        script(src := "/js/vendor/jquery.js"),
+        script(src := "/js/vendor/what-input.js"),
+        script(src := s"/js/vendor/foundation$min.js")
       )
   }
 }
 
 object Stylisch extends StyleSheet {
+
+  val yellowColor = cls(color := "yellow")
 
   val redBackground = cls(backgroundColor := "red")
 }
