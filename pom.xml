@@ -110,6 +110,17 @@
       <artifactId>scalajs-dom_sjs0.6_2.11</artifactId>
       <version>0.9.0</version>
     </dependency>
+    <dependency>
+      <groupId>biz.enef</groupId>
+      <artifactId>scalajs-angulate_sjs0.6_2.11</artifactId>
+      <version>0.2.4</version>
+    </dependency>
+    <dependency>
+      <groupId>be.doeraene</groupId>
+      <artifactId>scalajs-jquery_sjs0.6_2.11</artifactId>
+      <version>0.9.0</version>
+    </dependency>
+
 
     <dependency>
       <groupId>commons-codec</groupId>
