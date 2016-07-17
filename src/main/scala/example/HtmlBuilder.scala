@@ -11,34 +11,32 @@ import javax.servlet.annotation.WebServlet
 
 object Html {
 
-  def apply(style : Style) = {
+  def apply(css : String) = {
     html(
       head(
         title2("All Scala!"),
-        style2(`type` := "text/css")(style.render),
+        style2(`type` := "text/css")(css),
         script(src := "javascript.js")),
       body(
         h1("All Scala!"),
         p(backgroundColor := "green")("Push the red button below for an alert!"),
-        button(style.redBackground)(onclick := "example.HelloWorld().alert()")("Press me!")),
-        p("Source at "),a(href := "https://github.com/AIMMOTH/iso-scala")("GitHub")
+        button(cls := "example-Stylisch-redBackground")(onclick := "example.HelloWorld().alert()")("Press me!")),
+        p("Source at ")(a(href := "https://github.com/AIMMOTH/iso-scala")("GitHub"))
       )
   }
 }
 
-trait Style extends StyleSheet {
+object Stylisch extends StyleSheet {
 
-  def redBackground = cls(backgroundColor := "red")
-
-  def render = styleSheetText
+  val redBackground = cls(backgroundColor := "red")
 }
 
 @WebServlet(name = "htmlBuilder", urlPatterns = Array("/index.scala", "/index.html"))
 class Builder extends HttpServlet {
 
-  private val style = Sheet[Style]
+  private val style = Stylisch
   
   override def doGet(request: HttpServletRequest, response: HttpServletResponse) = 
-    response.getWriter().print(Html(style).render)
+    response.getWriter().print(Html(style.styleSheetText).render)
     
 }
