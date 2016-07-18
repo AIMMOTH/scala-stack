@@ -9,6 +9,8 @@ class Main {
   
   @JSExport
   def start() = {
+    println("Compiled Scala JS started...")
+    
     // Easy way to start foundation without Scala JS facade
     eval("$(document).foundation();")
     
@@ -17,6 +19,7 @@ class Main {
     module.start()
     
     jQuery("#alertButton").prop("disabled", false)
+    jQuery("#restButton").prop("disabled", false)
     jQuery("#increaseButton").attr("disabled", false)
     jQuery("#decreaseButton").attr("disabled", false)
     jQuery("#angularValue").removeClass("example-Stylisch-hidden")

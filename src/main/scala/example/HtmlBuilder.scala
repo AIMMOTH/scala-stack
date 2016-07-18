@@ -4,9 +4,9 @@ import javax.servlet.http.HttpServlet
 import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
 import scalatags.Text.all._
+import scalatags.Text.all.{ `type` => type_ } 
 import scalatags.stylesheet._
-import scalatags.Text.tags2.{ style => style2 }
-import scalatags.Text.tags2.{ title => title2 }
+import scalatags.Text.tags2.{ style => style2, title => title2 }
 import javax.servlet.annotation.WebServlet
 
 object Html {
@@ -21,7 +21,7 @@ object Html {
          */
         link(rel := "stylesheet", href := s"/css/foundation$min.css"), // http://foundation.zurb.com/sites/docs/kitchen-sink.html
         link(rel := "stylesheet", href := s"/css/foundation-icons.css"), // http://zurb.com/playground/foundation-icon-fonts-3
-        style2(`type` := "text/css")(css)),
+        style2(type_ := "text/css")(css)),
       body(attr("ng-app") := "app")(
         div(cls := "row")(
           div(cls := "large-12 columns")(
@@ -30,7 +30,12 @@ object Html {
               p("Backend is now compiling Scala JS source code into a JavaScript, it should take a few seconds. Buttons are disabled and Angular component is hidden in the meanwhile.")),
             h1("ISO Scala"),
             p("Push the red button below for an alert!"),
-            button(cls := "button", disabled := true, id := "alertButton")(onclick := "example.Alerter().hello()")("Press me!")),
+            button(cls := "button", disabled := true, id := "alertButton", onclick := "example.Alerter().hello()")("Press me!")),
+            h2("Create Resource"),
+            p("Enter number and create a resource!")(
+                input(type_ := "number", id := "resourceNumber"),
+                input(type_ := "button", onclick := "example.Rest().get()", value := "Create", cls := "button", disabled := true, id := "restButton")
+                ),
 
           div(cls := "row")(
             div(cls := "large-12 columns")(
