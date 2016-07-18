@@ -1,6 +1,6 @@
 # ISO SCALA
 
-Backend serve HTML, JavaScript and CSS from Scala! No frontend build (gulp, grun), no files (js, css, html, sass, less)!
+Backend serve HTML, JavaScript and CSS from Scala! No frontend build (gulp, grunt), no files (js, css, html, sass, less)!
 
 ## Description
 
