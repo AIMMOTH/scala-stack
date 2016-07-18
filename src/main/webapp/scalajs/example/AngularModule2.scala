@@ -8,9 +8,9 @@ class AngularModule {
 
   @JSExport
   def start() = {
-    
-    angular.createModule("app", Seq( /* "ngRoute" */)) match {
-      case app => 
+    // Start angular
+    angular.createModule("app", Seq( /* "ngRoute" */ )) match {
+      case app =>
         app.controllerOf[SimpleController]("SimpleController")
     }
   }
