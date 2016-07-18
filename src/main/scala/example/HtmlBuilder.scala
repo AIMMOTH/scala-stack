@@ -16,6 +16,9 @@ object Html {
     html(
       head(
         title2("All Scala!"),
+        /*
+         * All css files should be read from resources and bundled into one.
+         */
         link(rel := "stylesheet", href := s"/css/foundation$min.css"),
         link(rel := "stylesheet", href := "/css/app.css"),
         style2(`type` := "text/css")(css)),
@@ -24,9 +27,11 @@ object Html {
           div(cls := "large-12 columns")(
             h1("All Scala!"),
             p(backgroundColor := "green")("Push the red button below for an alert!"),
-            button(cls := "button example-Stylisch-redBackground example-Stylisch-yellowColor")(onclick := "example.HelloWorld().alert()")("Press me (when javascript.js is loaded)!")),
+            button(cls := "button example-Stylisch-redBackground example-Stylisch-yellowColor")(onclick := "example.Alerter().hello()")("Press me (when javascript.js is loaded)!")),
           p("Source at ")(a(href := "https://github.com/AIMMOTH/iso-scala/tree/angular")("GitHub")),
-          div(cls := "callout alert")(h5("This is a callout"), p("It has an easy to override visual style, and is appropriately subdued.")))),
+          div(cls := "callout alert")(
+            h5("This is a callout"),
+            p("It has an easy to override visual style, and is appropriately subdued.")))),
 
       div(attr("ng-controller") := "SimpleController as simple")(
         div(cls := "row")(
@@ -37,17 +42,19 @@ object Html {
               input(`type` := "button", attr("ng-click") := "simple.dec()", value := "-")),
             p("{{ simple.simpleInt }}")))),
 
-      // Footer
+      /*
+       * Footer
+       * All javascript should be read from resources and bundled into one file.
+       */
       script(src := "/js/vendor/jquery.js"),
       script(src := "/js/vendor/what-input.js"),
       script(src := s"/js/vendor/foundation$min.js"),
       script(src := "https://ajax.googleapis.com/ajax/libs/angularjs/1.5.7/angular.js"),
       script(src := "javascript.js"),
-      script()(
-        """
-          $(document).foundation();
-          example.AngularModule().start();
-        """))
+      /*
+       * Start Foundation and Angular
+       */
+      script()("example.Main().start();"))
   }
 }
 

@@ -32,11 +32,6 @@
       <artifactId>appengine-api-1.0-sdk</artifactId>
       <version>${appengine.version}</version>
     </dependency>
-    <!-- <dependency> -->
-    <!-- <groupId>com.google.appengine</groupId> -->
-    <!-- <artifactId>appengine-endpoints</artifactId> -->
-    <!-- <version>${appengine.version}</version> -->
-    <!-- </dependency> -->
     <dependency>
       <groupId>javax.servlet</groupId>
       <artifactId>javax.servlet-api</artifactId>
@@ -47,11 +42,6 @@
       <artifactId>servlet-scalajs-compiler</artifactId>
       <version>1.0-SNAPSHOT</version>
     </dependency>
-    <!-- <dependency> -->
-    <!-- <groupId>javax.inject</groupId> -->
-    <!-- <artifactId>javax.inject</artifactId> -->
-    <!-- <version>1</version> -->
-    <!-- </dependency> -->
     <dependency>
       <groupId>com.googlecode.objectify</groupId>
       <artifactId>objectify</artifactId>
@@ -120,7 +110,6 @@
       <artifactId>scalajs-jquery_sjs0.6_2.11</artifactId>
       <version>0.9.0</version>
     </dependency>
-
 
     <dependency>
       <groupId>commons-codec</groupId>

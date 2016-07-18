@@ -7,7 +7,7 @@ import org.scalajs.dom.window.alert
 class Alerter {
 
   @JSExport
-  def click() = {
+  def hello() = {
     alert("Hello!")
   }
 }

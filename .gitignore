@@ -2,7 +2,7 @@
 /.cache-tests
 /.classpath
 /.project
-/dev*
+/*.bat
 /.externalToolBuilders/
 /.settings/
 /project/project/
