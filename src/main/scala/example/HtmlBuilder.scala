@@ -4,7 +4,7 @@ import javax.servlet.http.HttpServlet
 import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
 import scalatags.Text.all._
-import scalatags.Text.all.{ `type` => type_ } 
+import scalatags.Text.all.{ `type` => type_ }
 import scalatags.stylesheet._
 import scalatags.Text.tags2.{ style => style2, title => title2 }
 import javax.servlet.annotation.WebServlet
@@ -33,7 +33,7 @@ object Html {
             button(cls := "button", disabled := true, id := "alertButton", onclick := "example.Alerter().hello()")("Press me!")),
             h2("Create Resource"),
             p("Enter number and create a resource!")(
-                input(type_ := "number", id := "resourceNumber"),
+                input(type_ := "number", value := 1, id := "resourceNumber"),
                 input(type_ := "button", onclick := "example.Rest().get()", value := "Create", cls := "button", disabled := true, id := "restButton")
                 ),
 
