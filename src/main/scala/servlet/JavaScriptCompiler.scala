@@ -1,4 +1,4 @@
-package example
+package servlet
 
 import javax.servlet.annotation.WebServlet
 import javax.servlet.http.HttpServletResponse
@@ -23,7 +23,7 @@ class ScalaCompiler extends HttpServlet {
 
     import scala.collection.JavaConversions._
 
-    val sources = request.getServletContext.getResourcePaths(scalaJsSource).filter(_.endsWith(".scala")).map {
+    def read(path : String) = request.getServletContext.getResourcePaths(path).filter(_.endsWith(".scala")).map {
       file =>
 
         log.debug(s"Adding $file to Scala JS compilation.")
@@ -31,6 +31,8 @@ class ScalaCompiler extends HttpServlet {
         val is = request.getServletContext.getResourceAsStream(file)
         Source.fromInputStream(is).mkString
     }
+    
+    val sources = read(scalaJsSource) ++ read("/scalajs/shared/")
     
     val optimizer = request.getParameter("optimizer") match {
       case "full" => Optimizer.Full

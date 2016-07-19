@@ -22,5 +22,14 @@
     <servlet-name>jersey_web_application</servlet-name>
     <url-pattern>/api/v1/*</url-pattern>
   </servlet-mapping>
-  
+
+  <filter>
+    <filter-name>objectify</filter-name>
+    <filter-class>com.googlecode.objectify.ObjectifyFilter</filter-class>
+  </filter>
+  <filter-mapping>
+    <filter-name>objectify</filter-name>
+    <url-pattern>/*</url-pattern>
+  </filter-mapping>
+
 </web-app>

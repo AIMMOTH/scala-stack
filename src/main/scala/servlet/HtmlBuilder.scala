@@ -1,12 +1,14 @@
-package example
+package servlet
 
 import javax.servlet.http.HttpServlet
 import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
+
 import scalatags.Text.all._
 import scalatags.Text.all.{ `type` => type_ }
 import scalatags.stylesheet._
 import scalatags.Text.tags2.{ style => style2, title => title2 }
+
 import javax.servlet.annotation.WebServlet
 
 object Html {
@@ -27,25 +29,17 @@ object Html {
           div(cls := "large-12 columns")(
             div(cls := "callout alert", id := "javascriptAlert")(
               h5("Compiling Scala JS to JavaScript ..."),
-              p("Backend is now compiling Scala JS source code into a JavaScript, it should take a few seconds. Buttons are disabled and Angular component is hidden in the meanwhile.")),
-            h1("ISO Scala"),
-            p("Push the red button below for an alert!"),
-            button(cls := "button", disabled := true, id := "alertButton", onclick := "example.Alerter().hello()")("Press me!")),
-            h2("Create Resource"),
-            p("Enter number and create a resource!")(
-                input(type_ := "number", value := 1, id := "resourceNumber"),
-                input(type_ := "button", onclick := "example.Rest().get()", value := "Create", cls := "button", disabled := true, id := "restButton")
-                ),
-
-          div(cls := "row")(
-            div(cls := "large-12 columns")(
-              div(attr("ng-controller") := "SimpleController as simple")(
-                h2("Simple update"),
-                p("Use increase and decrease buttons to change Angular counter.")(
-                  a(disabled := true, id := "increaseButton", attr("ng-click") := "simple.inc()", cls := "button")(i(cls := "fi-plus")),
-                  a(disabled := true, id := "decreaseButton", attr("ng-click") := "simple.dec()", cls := "button")(i(cls := "fi-minus"))),
-                p(cls := "example-Stylisch-hidden", id := "angularValue")("{{ simple.simpleInt }}")),
-              p("Source at ")(a(href := "https://github.com/AIMMOTH/iso-scala/tree/angular")("GitHub"))))),
+              p("Backend is now compiling Scala JS source code into a JavaScript, it should take a few seconds. Buttons are disabled in the meanwhile.")),
+          h1("ISO Scala"),
+          h2("POST Resource"),
+          p("Enter number and create a resource!")(
+            input(type_ := "number", value := 1, id := "resourcePost"),
+            input(type_ := "button", onclick := "example.Rest().post()", value := "POST", cls := "button", disabled := true, id := "resourcePostButton")),
+          h2("GET Resource"),
+          p("Enter an id (already filled in if you recently posted one resource) and GET it")(
+            input(type_ := "number", id := "resourceGet"),
+            input(type_ := "button", onclick := "example.Rest().get()", value := "GET", cls := "button", disabled := true, id := "resourceGetButton"),
+            textarea(disabled := true, id := "resourceOutput")),
 
         /*
        * Footer
@@ -54,12 +48,11 @@ object Html {
         script(src := "/js/vendor/jquery.js"),
         script(src := "/js/vendor/what-input.js"),
         script(src := s"/js/vendor/foundation$min.js"),
-        script(src := "https://ajax.googleapis.com/ajax/libs/angularjs/1.5.7/angular.js"),
         script(src := "javascript.js"),
         /*
        * Start Foundation and Angular
        */
-        script()("example.Main().start();")))
+        script()("example.Main().start();")))))
   }
 }
 

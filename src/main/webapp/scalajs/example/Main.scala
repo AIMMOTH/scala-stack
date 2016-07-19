@@ -14,15 +14,8 @@ class Main {
     // Easy way to start foundation without Scala JS facade
     eval("$(document).foundation();")
     
-    // Start Angular
-    val module = new AngularModule
-    module.start()
-    
-    jQuery("#alertButton").prop("disabled", false)
-    jQuery("#restButton").prop("disabled", false)
-    jQuery("#increaseButton").attr("disabled", false)
-    jQuery("#decreaseButton").attr("disabled", false)
-    jQuery("#angularValue").removeClass("example-Stylisch-hidden")
-    jQuery("#javascriptAlert").addClass("example-Stylisch-hidden")
+    jQuery("#javascriptAlert").addClass("servlet-Stylisch-hidden")
+    jQuery("#resourcePostButton").prop("disabled", false)
+    jQuery("#resourceGetButton").prop("disabled", false)
   }
 }
