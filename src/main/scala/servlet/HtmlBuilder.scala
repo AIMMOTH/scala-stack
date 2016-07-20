@@ -34,11 +34,11 @@ object Html {
           h2("POST Resource"),
           p("Enter number and create a resource!")(
             input(type_ := "number", value := 1, id := "resourcePost"),
-            input(type_ := "button", onclick := "example.AjaxRest().post()", value := "POST", cls := "button", disabled := true, id := "resourcePostButton")),
+            input(type_ := "button", onclick := "script.AjaxRest().post()", value := "POST", cls := "button", disabled := true, id := "resourcePostButton")),
           h2("GET Resource"),
           p("Enter an id (already filled in if you recently posted one resource) and GET it")(
             input(type_ := "number", id := "resourceGet"),
-            input(type_ := "button", onclick := "example.AjaxRest().get()", value := "GET", cls := "button", disabled := true, id := "resourceGetButton"),
+            input(type_ := "button", onclick := "script.AjaxRest().get()", value := "GET", cls := "button", disabled := true, id := "resourceGetButton"),
             textarea(disabled := true, id := "resourceOutput")),
 
         /*
@@ -52,7 +52,7 @@ object Html {
         /*
        * Start Foundation and Angular
        */
-        script()("example.Main().start();")))))
+        script()("script.Main().start();")))))
   }
 }
 

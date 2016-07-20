@@ -1,4 +1,4 @@
-package example
+package script
 
 import scala.scalajs.js.Dynamic
 import scala.scalajs.js.Dynamic._

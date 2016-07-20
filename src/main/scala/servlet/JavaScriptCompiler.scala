@@ -15,7 +15,7 @@ class ScalaCompiler extends HttpServlet {
 
   val log = LoggerFactory.getLogger(getClass)
   
-  val scalaJsSource = "/scalajs/example/"
+  val scalaJsSource = "/scalajs/script/"
   val relativeJarPath = "/WEB-INF/lib/"
   val additionalLibs = List("scalajs-angulate_sjs0.6_2.11-0.2.4.jar", "scalajs-jquery_sjs0.6_2.11-0.9.0.jar")
   
