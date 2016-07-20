@@ -12,7 +12,7 @@ import org.scalajs.jquery.JQueryAjaxSettings
 import shared._
 
 @JSExport
-class Rest {
+class AjaxRest {
 
   @JSExport
   def post() = {
@@ -22,15 +22,14 @@ class Rest {
     test.x = number.asInstanceOf[String].toInt
     ResourceValidator.apply(test)
     
-    jQuery.ajax("/api/v1/resource", settings = Dynamic.literal(
+    jQuery.ajax("/api/v1/resource/post", settings = Dynamic.literal(
       data = "x=" + number,
       method = "POST",
       success = { (data: JsAny, textStatus: String, jqXHR: JQueryXHR) =>
 
+        jQuery("#resourceGet").`val`(JSON.stringify(data))
         global.console.dir(data)
         alert("OK")
-        
-        jQuery("#resourceGet").`val`(JSON.stringify(data))
       },
       error = { (jqXhr: JQueryXHR, textStatus: String, errorThrown: String) =>
 
@@ -42,12 +41,12 @@ class Rest {
   @JSExport
   def get() = {
     val id = jQuery("#resourceGet").`val`()
-    jQuery.ajax("/api/v1/resource", settings = Dynamic.literal(
+    jQuery.ajax("/api/v1/resource/get", settings = Dynamic.literal(
       data = "id=" + id,
       success = { (data: JsAny, textStatus: String, jqXHR: JQueryXHR) =>
 
-        global.console.dir(data)
         jQuery("#resourceOutput").`val`(JSON.stringify(data))
+        global.console.dir(data)
         alert("OK")
       },
       error = { (jqXhr: JQueryXHR, textStatus: String, errorThrown: String) =>

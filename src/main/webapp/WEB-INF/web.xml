@@ -9,7 +9,7 @@
     <servlet-class>org.glassfish.jersey.servlet.ServletContainer</servlet-class>
     <init-param>
       <param-name>jersey.config.server.provider.packages</param-name>
-      <param-value>example</param-value>
+      <param-value>api</param-value>
     </init-param>
     <init-param>
       <!-- speed up initial Jersey loading by deactivating WADL -->

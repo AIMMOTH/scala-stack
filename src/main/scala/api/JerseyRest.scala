@@ -20,6 +20,7 @@ class JerseyRest {
    * POST http://localhost:8080/api/v1/resource
    */
   @POST
+  @Path("post")
   @Produces(Array(MediaType.APPLICATION_JSON))
   def post(@FormParam("x") x : Int) = {
     try {
@@ -43,6 +44,7 @@ class JerseyRest {
   }
   
   @GET
+  @Path("get")
   @Produces(Array(MediaType.APPLICATION_JSON))
   def get(@QueryParam("id") id : java.lang.Long) = {
     
