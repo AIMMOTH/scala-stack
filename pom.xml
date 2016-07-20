@@ -5,11 +5,13 @@
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>io.cenet</groupId>
-  <artifactId>iso-scala</artifactId>
+  <artifactId>scala-stack</artifactId>
 
   <packaging>war</packaging>
-  <name>Iso Scala</name>
+  <name>Scala Stack</name>
   <version>1.0-SNAPSHOT</version>
+
+  <description>Scala Stack using Google Flexible Environment with backend producing HTML, CSS and JavaScript with out any files (.html, .css, .sass, .less, .js) and with out any frontend builders like Gulp or Grunt.</description>
 
   <properties>
     <app.id>iso-scala-us</app.id>

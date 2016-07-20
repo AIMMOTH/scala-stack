@@ -1,10 +1,10 @@
-# ISO SCALA
+# SCALA STACK
 
-Backend serve HTML, JavaScript and CSS from Scala! No frontend build (gulp, grunt), no files (js, css, html, sass, less)!
+Scala Stack serve HTML, JavaScript and CSS from Scala code! No frontend build (gulp, grunt), no files (js, css, html, sass, less)!
 
 ## Description
 
-Backend Scala servlets serve a HTML file build with ScalaTags and ScalaCSS, and a JavaScript hot compiled from Scala JS source read from webapp. 
+In this project, a servlet serve a HTML file build with ScalaTags, and another servlet serve JavaScript hot compiled from Scala JS source. 
 
 ## Environment
 
