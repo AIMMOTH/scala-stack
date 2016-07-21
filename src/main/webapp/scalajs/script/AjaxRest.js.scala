@@ -1,4 +1,4 @@
-package script
+package com.github.aimmoth.script
 
 import scala.scalajs.js.Dynamic
 import scala.scalajs.js.Dynamic._

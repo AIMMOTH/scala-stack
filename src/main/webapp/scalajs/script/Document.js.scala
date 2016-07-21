@@ -1,14 +1,14 @@
-package script
+package com.github.aimmoth.script
 
 import scala.scalajs.js._
 import scala.scalajs.js.annotation.JSExport
 import org.scalajs.jquery.jQuery
 
 @JSExport
-class Main {
+class Document {
   
   @JSExport
-  def start() = {
+  def ready() = {
     println("Compiled Scala JS started...")
     
     // Easy way to start foundation without Scala JS facade
