@@ -4,11 +4,11 @@ import javax.ws.rs._
 import javax.ws.rs.core._
 import com.google.gson.Gson
 import com.googlecode.objectify.Key
-import shared.ResourceValidator
+import script.ResourceValidator
 import datastore.Objectify
 import com.googlecode.objectify.annotation.Cache
 import com.googlecode.objectify.annotation.Entity
-import shared.Resource
+import script.Resource
 import datastore.ResourceEntity
 
 @Path("resource")

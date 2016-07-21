@@ -4,7 +4,7 @@
 
   <modelVersion>4.0.0</modelVersion>
 
-  <groupId>io.cenet</groupId>
+  <groupId>com.github.aimmoth.scalastack</groupId>
   <artifactId>scala-stack</artifactId>
 
   <packaging>war</packaging>
@@ -73,11 +73,6 @@
       <artifactId>scala-compiler</artifactId>
       <version>${scala.version}</version>
     </dependency>
-    <dependency>
-      <groupId>com.lihaoyi</groupId>
-      <artifactId>scalatags_2.11</artifactId>
-      <version>0.6.0</version>
-    </dependency>
 
     <!-- Scala JS -->
     <dependency>
@@ -100,7 +95,7 @@
     <dependency>
       <groupId>org.scala-js</groupId>
       <artifactId>scalajs-dom_sjs0.6_2.11</artifactId>
-      <version>0.9.0</version>
+      <version>0.9.1</version>
     </dependency>
     <dependency>
       <groupId>biz.enef</groupId>
@@ -111,6 +106,11 @@
       <groupId>be.doeraene</groupId>
       <artifactId>scalajs-jquery_sjs0.6_2.11</artifactId>
       <version>0.9.0</version>
+    </dependency>
+    <dependency>
+      <groupId>com.lihaoyi</groupId>
+      <artifactId>scalatags_sjs0.6_2.11</artifactId>
+      <version>0.6.0</version>
     </dependency>
 
     <dependency>

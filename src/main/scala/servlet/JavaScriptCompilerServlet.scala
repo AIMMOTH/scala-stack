@@ -14,29 +14,39 @@ import org.slf4j.LoggerFactory
 class ScalaCompiler extends HttpServlet {
 
   val log = LoggerFactory.getLogger(getClass)
-  
-  val scalaJsSource = "/scalajs/script/"
+
+  private val sjsVersion = "sjs0.6"
+  private val scalaVersion = "2.11"
+  private val versions = sjsVersion + "_" + scalaVersion // "sjs0.6_2.11"
+
+  // Ending slash is important!
+  val scalaJsSource = "/scalajs/"
   val relativeJarPath = "/WEB-INF/lib/"
-  val additionalLibs = List("scalajs-angulate_sjs0.6_2.11-0.2.4.jar", "scalajs-jquery_sjs0.6_2.11-0.9.0.jar")
-  
-  override def doGet(request: HttpServletRequest, response: HttpServletResponse) = {
+  val additionalLibs = List(s"scalajs-angulate_$versions-0.2.4.jar", s"scalajs-jquery_$versions-0.9.0.jar", s"scalatags_$versions-0.6.0.jar", s"scalajs-dom_$versions-0.9.1.jar")
+
+  override def doGet(request : HttpServletRequest, response : HttpServletResponse) = {
 
     import scala.collection.JavaConversions._
 
-    def read(path : String) = request.getServletContext.getResourcePaths(path).filter(_.endsWith(".scala")).map {
-      file =>
+    // Mutable??
+    def findSource(path : String) : scala.collection.mutable.Set[String] =
+      request.getServletContext.getResourcePaths(path).partition(_.endsWith("/")) match {
+        case (folders, files) =>
+          files ++ (folders flatMap findSource)
+      }
 
-        log.debug(s"Adding $file to Scala JS compilation.")
-        
-        val is = request.getServletContext.getResourceAsStream(file)
-        Source.fromInputStream(is).mkString
+    def read(file : String) = {
+      log.debug(s"Adding $file to Scala JS compilation.")
+
+      val is = request.getServletContext.getResourceAsStream(file)
+      Source.fromInputStream(is).mkString
     }
-    
-    val sources = read(scalaJsSource) ++ read("/scalajs/shared/")
-    
+
+    val sources = findSource(scalaJsSource) map read
+
     val optimizer = request.getParameter("optimizer") match {
       case "full" => Optimizer.Full
-      case _ => Optimizer.Fast
+      case _      => Optimizer.Fast
     }
 
     val compiler = new ScalaJsCompiler

@@ -9,7 +9,8 @@ import scala.scalajs.js
 import org.scalajs.dom.window._
 import org.scalajs.jquery._
 import org.scalajs.jquery.JQueryAjaxSettings
-import shared._
+import script.ResourceValidator
+import script.Resource
 
 @JSExport
 class AjaxRest {
