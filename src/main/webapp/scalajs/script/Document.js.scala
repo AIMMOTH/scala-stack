@@ -14,7 +14,7 @@ class Document {
     // Easy way to start foundation without Scala JS facade
     eval("$(document).foundation();")
     
-    jQuery("#javascriptAlert").addClass("servlet-Stylisch-hidden")
+    jQuery("#javascriptAlert").addClass("scalatags-hidden")
     jQuery("#resourcePostButton").prop("disabled", false)
     jQuery("#resourceGetButton").prop("disabled", false)
   }

@@ -28,7 +28,7 @@ object Html {
          */
         link(rel := "stylesheet", href := s"/css/foundation$min.css"), // http://foundation.zurb.com/sites/docs/kitchen-sink.html
         link(rel := "stylesheet", href := s"/css/foundation-icons.css"), // http://zurb.com/playground/foundation-icon-fonts-3
-//        style2(type_ := "text/css")(css)),
+        style2(type_ := "text/css")(css.styleSheetText),
         
       body(attr("ng-app") := "app")(
         div(cls := "row")(
@@ -36,7 +36,7 @@ object Html {
             div(cls := "callout alert", id := "javascriptAlert")(
               h5("Compiling Scala JS to JavaScript ..."),
               p("Backend is now compiling Scala JS source code into a JavaScript, it should take a few seconds. Buttons are disabled in the meanwhile.")),
-            h1("ISO Scala"),
+            h1("Scala Stack"),
             h2("POST Resource"),
             p("Enter number and create a resource!")(
               input(type_ := "number", value := 1, id := "resourcePost"),

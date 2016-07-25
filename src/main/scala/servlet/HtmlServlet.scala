@@ -13,9 +13,7 @@ import javax.servlet.annotation.WebServlet
 @WebServlet(name = "htmlBuilder", urlPatterns = Array("/index.scala", "/index.html"))
 class Builder extends HttpServlet {
 
-  private val style = new StyleSheet with Stylisch
-  
   override def doGet(request: HttpServletRequest, response: HttpServletResponse) =
-    response.getWriter().print(Html(style).render)
+    response.getWriter().print(Html(Css.apply).render)
 
 }
