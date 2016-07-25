@@ -11,16 +11,25 @@ import org.scalajs.jquery._
 import org.scalajs.jquery.JQueryAjaxSettings
 import script.ResourceValidator
 import script.Resource
+import shared.Html
 
 @JSExport
 class AjaxRest {
 
   @JSExport
   def post() = {
-    val number = jQuery("#resourcePost").`val`()
+    // Values from HTML elements are Dynamic
+    val number = jQuery(s"#${Html.resourcePost}").`val`()
     
     val test = new Resource()
+    /*
+     * This could be replaced by implicit def (if you dare):
+      implicit def dynamicToInt(d : Dynamic) : Int = d.asInstanceOf[String].toInt
+      test.x = number
+     * 
+     */
     test.x = number.asInstanceOf[String].toInt
+    // Validated with shared logic
     ResourceValidator.apply(test)
     
     jQuery.ajax("/api/v1/resource/post", settings = Dynamic.literal(
@@ -28,7 +37,7 @@ class AjaxRest {
       method = "POST",
       success = { (data: JsAny, textStatus: String, jqXHR: JQueryXHR) =>
 
-        jQuery("#resourceGet").`val`(JSON.stringify(data))
+        jQuery(s"#${Html.resourceGet}").`val`(JSON.stringify(data))
         global.console.dir(data)
         alert("OK")
       },
@@ -41,12 +50,12 @@ class AjaxRest {
 
   @JSExport
   def get() = {
-    val id = jQuery("#resourceGet").`val`()
+    val id = jQuery(s"#${Html.resourceGet}").`val`()
     jQuery.ajax("/api/v1/resource/get", settings = Dynamic.literal(
       data = "id=" + id,
       success = { (data: JsAny, textStatus: String, jqXHR: JQueryXHR) =>
 
-        jQuery("#resourceOutput").`val`(JSON.stringify(data))
+        jQuery(s"#${Html.resourceOutput}").`val`(JSON.stringify(data))
         global.console.dir(data)
         alert("OK")
       },

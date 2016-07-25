@@ -14,6 +14,6 @@ import javax.servlet.annotation.WebServlet
 class Builder extends HttpServlet {
 
   override def doGet(request: HttpServletRequest, response: HttpServletResponse) =
-    response.getWriter().print(Html(Css.apply).render)
+    response.getWriter().print(Html(new Stylisch).render)
 
 }
