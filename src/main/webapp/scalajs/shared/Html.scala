@@ -27,7 +27,7 @@ object Html {
       case restClass =>
         (methodPath(restClass, "post"), methodPath(restClass, "get"))
       }
-    val documentReady = methodPath(classOf[com.github.aimmoth.script.Document], "ready")
+    val documentReady = methodPath(classOf[com.github.aimmoth.script.Document], "ready") // script.Document().ready()
     
     val min = if (minified) ".min" else ""
 
@@ -41,7 +41,7 @@ object Html {
         link(rel := "stylesheet", href := s"/css/foundation-icons.css"), // http://zurb.com/playground/foundation-icon-fonts-3
         style2(type_ := "text/css")(css.styleSheetText),
         
-      body(attr("ng-app") := "app")(
+      body()(
         div(cls := "row")(
           div(cls := "large-12 columns")(
               
@@ -62,7 +62,7 @@ object Html {
               input(type_ := "button", onclick := getFunction, value := "GET", cls := "button", disabled := true, id := resourceGetButton),
               textarea(disabled := true, id := resourceOutput)),
               
-            p("Source at ")(a(href := "https://github.com/AIMMOTH/scala-stack/tree/jquery")("GitHub")),
+            p("Source at ")(a(target := "_blank", href := "https://github.com/AIMMOTH/scala-stack/tree/jquery")("GitHub")),
 
             /*
        * TODO: All javascript could be read from resources and bundled into one file.

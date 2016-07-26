@@ -9,8 +9,8 @@ import scala.scalajs.js
 import org.scalajs.dom.window._
 import org.scalajs.jquery._
 import org.scalajs.jquery.JQueryAjaxSettings
-import script.ResourceValidator
-import script.Resource
+import shared.ResourceValidator
+import shared.Resource
 import shared.Html
 
 @JSExport
@@ -32,7 +32,7 @@ class AjaxRest {
     // Validated with shared logic
     ResourceValidator.apply(test)
     
-    jQuery.ajax("/api/v1/resource/post", settings = Dynamic.literal(
+    jQuery.ajax("/api/v1/resource", settings = Dynamic.literal(
       data = "x=" + number,
       method = "POST",
       success = { (data: JsAny, textStatus: String, jqXHR: JQueryXHR) =>
@@ -51,7 +51,7 @@ class AjaxRest {
   @JSExport
   def get() = {
     val id = jQuery(s"#${Html.resourceGet}").`val`()
-    jQuery.ajax("/api/v1/resource/get", settings = Dynamic.literal(
+    jQuery.ajax("/api/v1/resource", settings = Dynamic.literal(
       data = "id=" + id,
       success = { (data: JsAny, textStatus: String, jqXHR: JQueryXHR) =>
 

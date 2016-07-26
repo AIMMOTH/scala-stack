@@ -10,8 +10,8 @@ import scalatags.stylesheet._
 
 import javax.servlet.annotation.WebServlet
 
-@WebServlet(name = "htmlBuilder", urlPatterns = Array("/index.scala", "/index.html"))
-class Builder extends HttpServlet {
+@WebServlet(name = "htmlServlet", urlPatterns = Array("/index.html"))
+class HtmlServlet extends HttpServlet {
 
   override def doGet(request: HttpServletRequest, response: HttpServletResponse) =
     response.getWriter().print(Html(new Stylisch).render)

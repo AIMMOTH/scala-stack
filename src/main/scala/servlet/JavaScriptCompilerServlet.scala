@@ -10,8 +10,8 @@ import scala.io.Source
 import java.util.logging.Logger
 import org.slf4j.LoggerFactory
 
-@WebServlet(name = "javascriptCompiler", urlPatterns = Array("/javascript.js"))
-class ScalaCompiler extends HttpServlet {
+@WebServlet(name = "javaScriptCompilerServlet", urlPatterns = Array("/javascript.js"))
+class JavaScriptCompilerServlet extends HttpServlet {
 
   val log = LoggerFactory.getLogger(getClass)
 
@@ -22,7 +22,12 @@ class ScalaCompiler extends HttpServlet {
   // Ending slash is important!
   val scalaJsSource = "/scalajs/"
   val relativeJarPath = "/WEB-INF/lib/"
-  val additionalLibs = List(s"scalajs-angulate_$versions-0.2.4.jar", s"scalajs-jquery_$versions-0.9.0.jar", s"scalatags_$versions-0.6.0.jar", s"scalajs-dom_$versions-0.9.1.jar", s"sourcecode_$versions-0.1.1.jar")
+  
+  val additionalLibs = List(
+      s"scalajs-jquery_$versions-0.9.0.jar",
+      s"scalatags_$versions-0.6.0.jar",
+      s"scalajs-dom_$versions-0.9.1.jar",
+      s"sourcecode_$versions-0.1.1.jar")
 
   override def doGet(request : HttpServletRequest, response : HttpServletResponse) = {
 
@@ -49,7 +54,12 @@ class ScalaCompiler extends HttpServlet {
       case _      => Optimizer.Fast
     }
 
-    val compiler = new ScalaJsCompiler
-    response.getWriter.println(compiler.compileScalaJsStrings(request.getServletContext, sources.toList, optimizer, relativeJarPath, additionalLibs))
+    new ScalaJsCompiler match {
+      case compiler => 
+        compiler.compileScalaJsStrings(request.getServletContext, sources.toList, optimizer, relativeJarPath, additionalLibs) match {
+          case script : String =>
+            response.getWriter.println(script)
+        }
+    }
   }
 }
