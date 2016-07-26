@@ -3,7 +3,7 @@ package datastore
 import com.googlecode.objectify.annotation.Entity
 import com.googlecode.objectify.annotation.Cache
 import com.googlecode.objectify.annotation.Id
-import script.Resource
+import shared.Resource
 
 /**
  * Scala JS can only handle one constructor which needs to be empty to make this class serializable.

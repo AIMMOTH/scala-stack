@@ -4,25 +4,30 @@ import javax.ws.rs._
 import javax.ws.rs.core._
 import com.google.gson.Gson
 import com.googlecode.objectify.Key
-import script.ResourceValidator
+import shared.ResourceValidator
 import datastore.Objectify
 import com.googlecode.objectify.annotation.Cache
 import com.googlecode.objectify.annotation.Entity
-import script.Resource
+import shared.Resource
 import datastore.ResourceEntity
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @Path("resource")
 class JerseyRest {
   
   private lazy val gson = new Gson
+  private lazy val logger = LoggerFactory.getLogger(getClass)
   
   /*
    * POST http://localhost:8080/api/v1/resource
    */
   @POST
-  @Path("post")
   @Produces(Array(MediaType.APPLICATION_JSON))
   def post(@FormParam("x") x : Int) = {
+    
+    logger.info("Post!")
+    
     try {
       
       val r = new Resource
@@ -44,9 +49,10 @@ class JerseyRest {
   }
   
   @GET
-  @Path("get")
   @Produces(Array(MediaType.APPLICATION_JSON))
   def get(@QueryParam("id") id : java.lang.Long) = {
+    
+    logger.info("Get!")
     
     val e = Objectify.load.key(Key.create(classOf[ResourceEntity], id)).now
     
