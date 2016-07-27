@@ -24,6 +24,7 @@ class JavaScriptCompilerServlet extends HttpServlet {
   val relativeJarPath = "/WEB-INF/lib/"
   
   val additionalLibs = List(
+      s"scalajs-angulate_$versions-0.2.4.jar", 
       s"scalajs-jquery_$versions-0.9.0.jar",
       s"scalatags_$versions-0.6.0.jar",
       s"scalajs-dom_$versions-0.9.1.jar",

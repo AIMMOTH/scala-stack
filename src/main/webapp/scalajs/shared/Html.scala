@@ -41,7 +41,7 @@ object Html {
         link(rel := "stylesheet", href := s"/css/foundation-icons.css"), // http://zurb.com/playground/foundation-icon-fonts-3
         style2(type_ := "text/css")(css.styleSheetText),
         
-      body()(
+      body(attr("ng-app") := "app")(
         div(cls := "row")(
           div(cls := "large-12 columns")(
               
@@ -62,7 +62,7 @@ object Html {
               input(type_ := "button", onclick := getFunction, value := "GET", cls := "button", disabled := true, id := resourceGetButton),
               textarea(disabled := true, id := resourceOutput)),
               
-            p("Source at ")(a(target := "_blank", href := "https://github.com/AIMMOTH/scala-stack/tree/jquery")("GitHub")),
+            p("Source at ")(a(target := "_blank", href := "https://github.com/AIMMOTH/scala-stack/tree/angular")("GitHub")),
 
             /*
        * TODO: All javascript could be read from resources and bundled into one file.
@@ -70,6 +70,9 @@ object Html {
             script(src := "/js/vendor/jquery.js"),
             script(src := "/js/vendor/what-input.js"),
             script(src := s"/js/vendor/foundation$min.js"),
+            script(src := s"https://ajax.googleapis.com/ajax/libs/angularjs/1.5.8/angular$min.js"),
+            script(src := s"https://ajax.googleapis.com/ajax/libs/angularjs/X.Y.Z/angular-route.js"),
+            
             script(src := "javascript.js"),
             /*
        * Start Foundation
