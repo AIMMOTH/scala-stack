@@ -3,8 +3,7 @@ package com.github.aimmoth.script
 import scala.scalajs.js._
 import scala.scalajs.js.annotation.JSExport
 import org.scalajs.jquery.jQuery
-import shared.Html
-import shared.Stylisch
+import shared._
 
 @JSExport
 class Document {
@@ -19,8 +18,8 @@ class Document {
     // Use this to get names of styling classes
     val styling = new Stylisch
     
-    jQuery(s"#${Html.javascriptAlert}").addClass(s"${styling.hidden.name}")
-    jQuery(s"#${Html.resourcePostButton}").prop("disabled", false)
-    jQuery(s"#${Html.resourceGetButton}").prop("disabled", false)
+    jQuery(s"#${Id.javascriptAlert.toString}").addClass(s"${styling.hidden.name}")
+    jQuery(s"#${Id.resourcePostButton.toString}").prop("disabled", false)
+    jQuery(s"#${Id.resourceGetButton.toString}").prop("disabled", false)
   }
 }

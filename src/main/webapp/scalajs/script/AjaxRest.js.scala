@@ -11,7 +11,7 @@ import org.scalajs.jquery._
 import org.scalajs.jquery.JQueryAjaxSettings
 import shared.ResourceValidator
 import shared.Resource
-import shared.Html
+import shared._
 
 @JSExport
 class AjaxRest {
@@ -19,7 +19,7 @@ class AjaxRest {
   @JSExport
   def post() = {
     // Values from HTML elements are Dynamic
-    val number = jQuery(s"#${Html.resourcePost}").`val`()
+    val number = jQuery(s"#${Id.resourcePost.toString}").`val`()
     
     val test = new Resource()
     /*
@@ -37,7 +37,7 @@ class AjaxRest {
       method = "POST",
       success = { (data: JsAny, textStatus: String, jqXHR: JQueryXHR) =>
 
-        jQuery(s"#${Html.resourceGet}").`val`(JSON.stringify(data))
+        jQuery(s"#${Id.resourceGet.toString}").`val`(JSON.stringify(data))
         global.console.dir(data)
         alert("OK")
       },
@@ -50,12 +50,12 @@ class AjaxRest {
 
   @JSExport
   def get() = {
-    val id = jQuery(s"#${Html.resourceGet}").`val`()
+    val id = jQuery(s"#${Id.resourceGet.toString}").`val`()
     jQuery.ajax("/api/v1/resource", settings = Dynamic.literal(
       data = "id=" + id,
       success = { (data: JsAny, textStatus: String, jqXHR: JQueryXHR) =>
 
-        jQuery(s"#${Html.resourceOutput}").`val`(JSON.stringify(data))
+        jQuery(s"#${Id.resourceOutput.toString}").`val`(JSON.stringify(data))
         global.console.dir(data)
         alert("OK")
       },
