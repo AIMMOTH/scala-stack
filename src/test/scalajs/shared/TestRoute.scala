@@ -4,6 +4,7 @@ import scalatags.Text.all._
 import scalatags.Text._
 import org.junit.Test
 import org.junit.Assert
+import scala.xml.XML
 
 class TestRoute {
 
@@ -14,10 +15,13 @@ class TestRoute {
         Assert.assertTrue(routes.tail.forall(_ == routes.head))
         routes.head match {
           case html =>
-
-            val content = html.render
-            println(content)
-            Assert.assertTrue(content contains "https://github.com/AIMMOTH/scala-stack/tree/jquery")
+            val xml = XML.loadString(html.render)
+            xml.child match {
+              case Seq(head, body) =>
+                Assert.assertEquals(head.label, "head")
+                Assert.assertEquals(body.label, "body")
+//                Assert.assertTrue(body.descendant.flatmap(_.attribute("href")).map(_.head).find(_.attribute("href") == "https://github.com/AIMMOTH/scala-stack/tree/jquery").isDefined)
+            }
         }
     }
 
