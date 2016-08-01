@@ -14,7 +14,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @Path("resource")
-class JerseyRest {
+class JerseyRest extends BackendLogic {
   
   private lazy val gson = new Gson
   private lazy val logger = LoggerFactory.getLogger(getClass)
@@ -24,20 +24,12 @@ class JerseyRest {
    */
   @POST
   @Produces(Array(MediaType.APPLICATION_JSON))
-  def post(@FormParam("x") x : Int) = {
-    
-    logger.info("Post!")
+  def post(@FormParam("x") r : Resource) = {
     
     try {
       
-      val r = new Resource
-      r.x = x
-      ResourceValidator(r)
-      
-      val entity = new ResourceEntity()
-      entity.r = r
-      
-      Objectify.save.entity(entity).now
+      val entity = create(r, entity => Objectify.save.entity(entity).now, logger.info)
+//      Objectify.save.entity(entity).now
       
       Response.ok(gson.toJson(entity.id).toString).build
       

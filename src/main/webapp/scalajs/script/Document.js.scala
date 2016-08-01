@@ -1,4 +1,4 @@
-package com.github.aimmoth.script
+package webapp.script
 
 import scala.scalajs.js._
 import scala.scalajs.js.annotation.JSExport

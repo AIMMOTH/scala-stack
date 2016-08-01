@@ -143,12 +143,6 @@
       <version>4.12</version>
       <scope>test</scope>
     </dependency>
-    <dependency>
-      <groupId>org.scala-js</groupId>
-      <artifactId>scalajs-junit-test-plugin_2.11.0</artifactId>
-      <version>0.6.10</version>
-      <scope>test</scope>
-    </dependency>
   </dependencies>
 
   <build>

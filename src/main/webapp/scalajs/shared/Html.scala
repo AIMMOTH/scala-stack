@@ -17,11 +17,11 @@ object Html {
     // From reflection get "package.Class().method()"
     def methodPath(klass : Class[_], methodName : String) = s"${klass.getCanonicalName}().$methodName()"
     
-    val (postFunction, getFunction) = classOf[com.github.aimmoth.script.AjaxRest] match {
+    val (postFunction, getFunction) = classOf[webapp.script.AjaxRest] match {
       case restClass =>
         (methodPath(restClass, "post"), methodPath(restClass, "get"))
       }
-    val documentReady = methodPath(classOf[com.github.aimmoth.script.Document], "ready") // script.Document().ready()
+    val documentReady = methodPath(classOf[webapp.script.Document], "ready") // script.Document().ready()
     
     val min = if (minified) ".min" else ""
 
