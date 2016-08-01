@@ -7,6 +7,9 @@ object Objectify {
   
   ObjectifyService.register(classOf[ResourceEntity])
   
+  // To register classes
+  def registerClasses() = {}
+  
   def load = ObjectifyService.ofy.load
   
   def save = ObjectifyService.ofy.save

@@ -23,6 +23,9 @@ class JavaScriptCompilerServlet extends HttpServlet {
   val scalaJsSource = "/scalajs/"
   val relativeJarPath = "/WEB-INF/lib/"
   
+  /*
+   * Important! These must either have source files or be compiled to Scala JS!
+   */
   val additionalLibs = List(
       s"scalajs-jquery_$versions-0.9.0.jar",
       s"scalatags_$versions-0.6.0.jar",

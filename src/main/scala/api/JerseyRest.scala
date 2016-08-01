@@ -24,9 +24,11 @@ class JerseyRest extends BackendLogic {
    */
   @POST
   @Produces(Array(MediaType.APPLICATION_JSON))
-  def post(@FormParam("x") r : Resource) = {
+  def post(@FormParam("x") json : String) = {
     
     try {
+      
+      val r = gson.fromJson(json, classOf[Resource])
       
       val entity = create(r, entity => Objectify.save.entity(entity).now, logger.info)
 //      Objectify.save.entity(entity).now
