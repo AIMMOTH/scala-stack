@@ -21,7 +21,7 @@ class AjaxRest extends FrontendLogic {
 
     create(() => jQuery(s"#${Id.resourcePost.toString}").`val`().toString.toInt, resource => {
 
-      val stringified = JSON.stringify(resource)
+      val stringified = JSON.stringify(Dynamic.literal(x = resource.x))
       
       jQuery.ajax("/api/v1/resource", settings = Dynamic.literal(
         data = "x=" + stringified,

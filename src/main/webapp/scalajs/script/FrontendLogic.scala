@@ -7,14 +7,14 @@ trait FrontendLogic {
   def create(getPostValue : () => Integer, postAction : Resource => Unit) = {
     val number = getPostValue()
     
-    val test = Resource(number)
+    val test = new Resource()
     /*
      * This could be replaced by implicit def (if you dare):
       implicit def dynamicToInt(d : Dynamic) : Int = d.asInstanceOf[String].toInt
       test.x = number
      * 
      */
-//    test.x = number
+    test.x = number
     
     // Validated with shared logic
     ResourceValidator.apply(test)
