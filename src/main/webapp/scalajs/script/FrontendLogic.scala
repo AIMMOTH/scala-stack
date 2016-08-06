@@ -4,7 +4,7 @@ import shared._
 
 trait FrontendLogic {
   
-  def create(getPostValue : () => Integer, postAction : Resource => Unit) : Result[Throwable, Long] = {
+  def create(getPostValue : () => Integer, postAction : Resource => Unit) : Result[Throwable, Unit] = {
     
     try {
       val number = getPostValue()
@@ -14,7 +14,7 @@ trait FrontendLogic {
       // Validated with shared logic
       ResourceValidator.apply(test)
       
-      postAction(test)
+      Success(postAction(test))
     } catch {
       case t : Throwable => 
         Failure(t)

@@ -9,7 +9,7 @@ import datastore.Objectify
 import com.googlecode.objectify.annotation.Cache
 import com.googlecode.objectify.annotation.Entity
 import shared.Resource
-import datastore.ResourceEntity
+import datastore.entity.ResourceEntity
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -30,15 +30,27 @@ class JerseyRest extends BackendLogic {
       
       val r = gson.fromJson(json, classOf[Resource])
       
-      val entity = create(r, entity => Objectify.save.entity(entity).now, logger.info)
+      create(r, entity => Objectify.save.entity(entity).now, logger.info) match {
+        case shared.Success(entity) =>
+          Response.ok(gson.toJson(entity.id).toString).build
+        case shared.Failure(throwable) =>
+          errorResponse(throwable)
+      }
       
-      Response.ok(gson.toJson(entity.id).toString).build
       
     } catch {
       case e : Throwable =>
-        e.printStackTrace()
-        Response.serverError().entity(e.getMessage).build
+        errorResponse(e)
     }
+  }
+  
+  private def errorResponse(throwable : Throwable) : Response = {
+    throwable.printStackTrace()
+    errorResponse(throwable.getMessage)
+  }
+  
+  private def errorResponse(message : String) : Response = {
+    Response.serverError().entity(message).build
   }
   
   @GET
@@ -47,8 +59,11 @@ class JerseyRest extends BackendLogic {
     
     logger.info("Get!")
     
-    val e = Objectify.load.key(Key.create(classOf[ResourceEntity], id)).now
-    
-    Response.ok(gson.toJson(e.r).toString).build
+    Objectify.load.key(Key.create(classOf[ResourceEntity], id)).now match {
+      case null =>
+        errorResponse("Could not find entity.")
+      case entity =>
+        Response.ok(gson.toJson(entity.r).toString).build
+    }
   }
 }

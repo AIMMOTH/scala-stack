@@ -19,28 +19,31 @@ class AjaxRest extends FrontendLogic {
   @JSExport
   def post() = {
 
-    create(() => jQuery(s"#${Id.resourcePost.toString}").`val`().toString.toInt, resource => {
+    val result = create(() => jQuery(s"#${Id.resourcePost.toString}").`val`().toString.toInt, resource => {
 
       val r = resource.asInstanceOf[Dynamic]
       val s = JSON.stringify(r) // {"x$1":1,"y$1":10}
       val s2 = s.replaceAll("""(\$1":)""", """":""") // Replace "x$1": with "x":
       
-      val result = jQuery.ajax("/api/v1/resource", settings = Dynamic.literal(
+      jQuery.ajax("/api/v1/resource", settings = Dynamic.literal(
         data = "x=" + s2,
         method = "POST",
-        error = { (jqXhr: JQueryXHR, textStatus: String, errorThrown: String) =>
-
-          throw new Exception(s"${jqXhr.status}:${jqXhr.responseText}")
-        }).asInstanceOf[JQueryAjaxSettings]).asInstanceOf[JQueryXHR]
-      
-      val success = (data: JsAny, textStatus: String, jqXHR: JQueryXHR) => {
+        success = { (data: JsAny, textStatus: String, jqXHR: JQueryXHR) =>
 
           jQuery(s"#${Id.resourceGet.toString}").`val`(JSON.stringify(data))
           global.console.dir(data)
           alert("OK")
-        }
-      result.done(success)
+        },
+        error = { (jqXhr: JQueryXHR, textStatus: String, errorThrown: String) =>
+
+          global.console.dir(jqXhr)
+          alert(s"${jqXhr.status}:${jqXhr.statusText}")
+        }).asInstanceOf[JQueryAjaxSettings])
     })
+    result match {
+      case Failure(throwable) => alert(throwable.getMessage)
+      case Success(unit) =>
+    }
   }
 
   @JSExport
@@ -57,7 +60,7 @@ class AjaxRest extends FrontendLogic {
       error = { (jqXhr: JQueryXHR, textStatus: String, errorThrown: String) =>
 
         global.console.dir(jqXhr)
-        alert(s"${jqXhr.status}:${jqXhr.responseText}")
+        alert(s"${jqXhr.status}:${jqXhr.statusText}")
       }).asInstanceOf[JQueryAjaxSettings])
   }
 }

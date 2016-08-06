@@ -41,9 +41,11 @@ class TransTest {
     
     frontend.create(() => 22, resource => {
       backend.create(resource, entity => Objectify.save.entity(entity).now, println) match {
-        case resourceEntity =>
+        case shared.Success(resourceEntity) =>
           Assert.assertTrue(resourceEntity.r.x == 22)
           Assert.assertTrue(resourceEntity.id != null)
+        case shared.Failure(throwable) =>
+          throw throwable
       }
     })
   }

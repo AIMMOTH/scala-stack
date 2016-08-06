@@ -1,5 +1,6 @@
 package datastore
 
+import datastore.entity._
 import com.googlecode.objectify.ObjectifyService
 import com.googlecode.objectify.VoidWork
 

@@ -21,7 +21,7 @@ object Html {
       case restClass =>
         (methodPath(restClass, "post"), methodPath(restClass, "get"))
       }
-    val documentReady = methodPath(classOf[scalajs.Document], "ready") // script.Document().ready()
+    val documentReady = methodPath(classOf[scalajs.Document], "ready") // scalajs.Document().ready()
     
     val min = if (minified) ".min" else ""
 
