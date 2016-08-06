@@ -5,9 +5,9 @@ import shared._
 
 trait BackendLogic {
 
-  def create(r: Resource, save: ResourceEntity => Unit, log : String => Unit) : Result[Throwable, ResourceEntity] = {
+  def create(r: Resource, save: ResourceEntity => Unit, log : org.slf4j.Logger) : Result[Throwable, ResourceEntity] = {
 
-    log("Post!")
+    log.info("Post!")
     
     try {
       ResourceValidator(r)
@@ -16,6 +16,8 @@ trait BackendLogic {
       val entity = new ResourceEntity()
       entity.r = r
   
+      log.debug("Saving ...")
+    
       save(entity)
   
       Success(entity)

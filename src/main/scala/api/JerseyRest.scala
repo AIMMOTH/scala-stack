@@ -30,7 +30,7 @@ class JerseyRest extends BackendLogic {
       
       val r = gson.fromJson(json, classOf[Resource])
       
-      create(r, entity => Objectify.save.entity(entity).now, logger.info) match {
+      create(r, entity => Objectify.save.entity(entity).now, logger) match {
         case shared.Success(entity) =>
           Response.ok(gson.toJson(entity.id).toString).build
         case shared.Failure(throwable) =>
