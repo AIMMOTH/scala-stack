@@ -22,7 +22,7 @@ class AjaxRest extends FrontendLogic {
     create(() => jQuery(s"#${Id.resourcePost.toString}").`val`().toString.toInt, resource => {
 
       val r = resource.asInstanceOf[Dynamic]
-      val s = JSON.stringify(r)
+      val s = JSON.stringify(r) // {"x$1":1,"y$1":10}
       val s2 = s.replaceAll("""(\$1":)""", """":""") // Replace "x$1": with "x":
       
       jQuery.ajax("/api/v1/resource", settings = Dynamic.literal(
