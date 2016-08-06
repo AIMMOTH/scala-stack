@@ -14,12 +14,14 @@ import datastore.Objectify
 import scalajs.FrontendLogic
 import com.googlecode.objectify.ObjectifyService
 import com.googlecode.objectify.util.Closeable
+import org.slf4j.LoggerFactory
 
 class TransTest {
   
   class TestFrontendLogic extends FrontendLogic
   class TestBackendLogic extends BackendLogic
   
+  private val logger = LoggerFactory.getLogger(getClass)
   private val helper = new LocalServiceTestHelper()
   private var closable : Closeable = null
   
@@ -40,7 +42,7 @@ class TransTest {
     val backend = new TestBackendLogic
     
     frontend.create(() => 22, resource => {
-      backend.create(resource, entity => Objectify.save.entity(entity).now, println) match {
+      backend.create(resource, entity => Objectify.save.entity(entity).now, logger) match {
         case shared.Success(resourceEntity) =>
           Assert.assertTrue(resourceEntity.r.x == 22)
           Assert.assertTrue(resourceEntity.id != null)
