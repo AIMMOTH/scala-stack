@@ -12,7 +12,7 @@ object Id extends Enumeration {
 
 object Html {
   
-  def apply(css: Stylisch, minified: Boolean = false) = {
+  def apply(css: Stylisch, language : Languages.Language = Languages.default, minified: Boolean = false) = {
   
     // From reflection get "package.Class().method()"
     def methodPath(klass : Class[_], methodName : String) = s"${klass.getCanonicalName}().$methodName()"
@@ -43,7 +43,7 @@ object Html {
               h5("Compiling Scala JS to JavaScript ..."),
               p("Backend is now compiling Scala JS source code into a JavaScript, it should take a few seconds. Buttons are disabled in the meanwhile.")),
               
-            h1("Scala Stack"),
+            h1(Translations.documentHeader.get(language)),
             
             h2("POST Resource"),
             p("Enter number and create a resource!")(
