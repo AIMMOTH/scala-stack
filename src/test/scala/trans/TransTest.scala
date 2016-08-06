@@ -15,6 +15,8 @@ import webapp.script.FrontendLogic
 import com.googlecode.objectify.ObjectifyService
 import com.googlecode.objectify.util.Closeable
 
+import upickle.default._
+
 class TransTest {
   
   class TestFrontendLogic extends FrontendLogic

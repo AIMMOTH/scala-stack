@@ -1,17 +1,19 @@
 package webapp.script
 
+import scala.scalajs.js.{ Any => JsAny }
 import scala.scalajs.js.Dynamic
 import scala.scalajs.js.Dynamic._
-import scala.scalajs.js.{ Any => JsAny }
-import scala.scalajs.js.annotation.JSExport
 import scala.scalajs.js.JSON
-import scala.scalajs.js
+import scala.scalajs.js.annotation.JSExport
+
 import org.scalajs.dom.window._
 import org.scalajs.jquery._
 import org.scalajs.jquery.JQueryAjaxSettings
-import shared.ResourceValidator
-import shared.Resource
+
+import upickle.default._
+
 import shared._
+import shared.Resource
 
 @JSExport
 class AjaxRest extends FrontendLogic {
@@ -21,10 +23,10 @@ class AjaxRest extends FrontendLogic {
 
     create(() => jQuery(s"#${Id.resourcePost.toString}").`val`().toString.toInt, resource => {
 
-      val stringified = JSON.stringify(resource)
+      val s = JSON.stringify(ResourceObject(resource))
       
       jQuery.ajax("/api/v1/resource", settings = Dynamic.literal(
-        data = "x=" + stringified,
+        data = "x=" + s,
         method = "POST",
         success = { (data: JsAny, textStatus: String, jqXHR: JQueryXHR) =>
 

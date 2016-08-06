@@ -2,15 +2,18 @@ package shared
 
 import scala.scalajs.js
 
-@js.native
-trait Resource extends js.Object {
-  
-  var x : Int = js.native
+sealed class Resource {
+  var x : Integer = 0
 }
 
-object Resource {
+trait ResourceObject extends js.Object {
   
-  def apply(x : Int) = js.Dynamic.literal(x = x).asInstanceOf[Resource] 
-  
-  def fromString(json : String) = Resource(Integer.parseInt(json))
+  var x : Integer = js.native
+}
+
+object ResourceObject {
+
+  def apply(r : Resource) : ResourceObject = {
+    js.Dynamic.literal(x = r.x).asInstanceOf[ResourceObject]  
+  }
 }

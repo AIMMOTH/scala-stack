@@ -30,7 +30,8 @@ class JavaScriptCompilerServlet extends HttpServlet {
       s"scalajs-jquery_$versions-0.9.0.jar",
       s"scalatags_$versions-0.6.0.jar",
       s"scalajs-dom_$versions-0.9.1.jar",
-      s"sourcecode_$versions-0.1.1.jar")
+      s"sourcecode_$versions-0.1.1.jar",
+      s"upickle_$versions-0.4.1.jar")
 
   override def doGet(request : HttpServletRequest, response : HttpServletResponse) = {
 
