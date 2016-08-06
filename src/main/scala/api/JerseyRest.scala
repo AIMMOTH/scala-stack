@@ -54,8 +54,9 @@ class JerseyRest extends BackendLogic {
   }
   
   @GET
+  @Path("{id}")
   @Produces(Array(MediaType.APPLICATION_JSON))
-  def get(@QueryParam("id") id : java.lang.Long) = {
+  def get(@PathParam("id") id : java.lang.Long) = {
     
     logger.info("Get!")
     

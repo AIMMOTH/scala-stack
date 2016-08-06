@@ -49,8 +49,7 @@ class AjaxRest extends FrontendLogic {
   @JSExport
   def get() = {
     val id = jQuery(s"#${Id.resourceGet.toString}").`val`()
-    jQuery.ajax("/api/v1/resource", settings = Dynamic.literal(
-      data = "id=" + id,
+    jQuery.ajax("/api/v1/resource/" + id, settings = Dynamic.literal(
       success = { (data: JsAny, textStatus: String, jqXHR: JQueryXHR) =>
 
         jQuery(s"#${Id.resourceOutput.toString}").`val`(JSON.stringify(data))
