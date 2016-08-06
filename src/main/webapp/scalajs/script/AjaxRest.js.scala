@@ -10,8 +10,6 @@ import org.scalajs.dom.window._
 import org.scalajs.jquery._
 import org.scalajs.jquery.JQueryAjaxSettings
 
-import upickle.default._
-
 import shared._
 import shared.Resource
 
@@ -23,10 +21,12 @@ class AjaxRest extends FrontendLogic {
 
     create(() => jQuery(s"#${Id.resourcePost.toString}").`val`().toString.toInt, resource => {
 
-      val s = JSON.stringify(ResourceObject(resource))
+      val r = resource.asInstanceOf[Dynamic]
+      val s = JSON.stringify(r)
+      val s2 = s.replaceAll("""(\$1":)""", """":""") // Replace "x$1": with "x":
       
       jQuery.ajax("/api/v1/resource", settings = Dynamic.literal(
-        data = "x=" + s,
+        data = "x=" + s2,
         method = "POST",
         success = { (data: JsAny, textStatus: String, jqXHR: JQueryXHR) =>
 

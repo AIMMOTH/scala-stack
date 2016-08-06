@@ -31,7 +31,6 @@ class JerseyRest extends BackendLogic {
       val r = gson.fromJson(json, classOf[Resource])
       
       val entity = create(r, entity => Objectify.save.entity(entity).now, logger.info)
-//      Objectify.save.entity(entity).now
       
       Response.ok(gson.toJson(entity.id).toString).build
       

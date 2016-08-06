@@ -9,8 +9,7 @@ class TestResource {
   
   @Test
   def dynamic : Unit = {
-    val r = new Resource
-    r.x = 10
+    val r = new Resource(x = 10)
     Assert.assertTrue(r.x == 10)
   }
 }
