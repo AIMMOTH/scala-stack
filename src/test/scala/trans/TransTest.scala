@@ -11,11 +11,9 @@ import com.googlecode.objectify.annotation.Entity
 
 import api.BackendLogic
 import datastore.Objectify
-import webapp.script.FrontendLogic
+import scalajs.FrontendLogic
 import com.googlecode.objectify.ObjectifyService
 import com.googlecode.objectify.util.Closeable
-
-import upickle.default._
 
 class TransTest {
   

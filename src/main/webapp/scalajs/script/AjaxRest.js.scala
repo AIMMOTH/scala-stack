@@ -1,4 +1,4 @@
-package webapp.script
+package scalajs
 
 import scala.scalajs.js.{ Any => JsAny }
 import scala.scalajs.js.Dynamic
@@ -25,20 +25,21 @@ class AjaxRest extends FrontendLogic {
       val s = JSON.stringify(r) // {"x$1":1,"y$1":10}
       val s2 = s.replaceAll("""(\$1":)""", """":""") // Replace "x$1": with "x":
       
-      jQuery.ajax("/api/v1/resource", settings = Dynamic.literal(
+      val result = jQuery.ajax("/api/v1/resource", settings = Dynamic.literal(
         data = "x=" + s2,
         method = "POST",
-        success = { (data: JsAny, textStatus: String, jqXHR: JQueryXHR) =>
+        error = { (jqXhr: JQueryXHR, textStatus: String, errorThrown: String) =>
+
+          throw new Exception(s"${jqXhr.status}:${jqXhr.responseText}")
+        }).asInstanceOf[JQueryAjaxSettings]).asInstanceOf[JQueryXHR]
+      
+      val success = (data: JsAny, textStatus: String, jqXHR: JQueryXHR) => {
 
           jQuery(s"#${Id.resourceGet.toString}").`val`(JSON.stringify(data))
           global.console.dir(data)
           alert("OK")
-        },
-        error = { (jqXhr: JQueryXHR, textStatus: String, errorThrown: String) =>
-
-          global.console.dir(jqXhr)
-          alert(s"${jqXhr.status}:${jqXhr.responseText}")
-        }).asInstanceOf[JQueryAjaxSettings])
+        }
+      result.done(success)
     })
   }
 

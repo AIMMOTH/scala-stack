@@ -1,4 +1,4 @@
-package webapp.script
+package scalajs
 
 import scala.scalajs.js._
 import scala.scalajs.js.annotation.JSExport

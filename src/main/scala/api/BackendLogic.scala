@@ -1,21 +1,27 @@
 package api
 
-import datastore._
+import datastore.entity.ResourceEntity
 import shared._
 
 trait BackendLogic {
 
-  def create(r: Resource, save: ResourceEntity => Unit, info : String => Unit) = {
+  def create(r: Resource, save: ResourceEntity => Unit, log : String => Unit) : Result[Throwable, ResourceEntity] = {
 
-    info("Post!")
+    log("Post!")
     
-    ResourceValidator(r)
-
-    val entity = new ResourceEntity()
-    entity.r = r
-
-    save(entity)
-
-    entity
+    try {
+      ResourceValidator(r)
+      
+  
+      val entity = new ResourceEntity()
+      entity.r = r
+  
+      save(entity)
+  
+      Success(entity)
+    } catch {
+      case t : Throwable =>
+        Failure(t)
+    }
   }
 }
