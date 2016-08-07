@@ -12,38 +12,52 @@ import shared.Resource
 import datastore.entity.ResourceEntity
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import shared.OK
+import shared.KO
 
+/**
+ * Untested code. All logic is put into BackendLogic
+ */
 @Path("resource")
 class JerseyRest extends BackendLogic {
   
   private lazy val gson = new Gson
   private lazy val logger = LoggerFactory.getLogger(getClass)
   
-  /*
+  /**
    * POST http://localhost:8080/api/v1/resource
    */
   @POST
   @Produces(Array(MediaType.APPLICATION_JSON))
   def post(@FormParam("x") json : String) = {
     
-    try {
+    create(json, logger) match {
       
-      val r = gson.fromJson(json, classOf[Resource])
-      
-      create(r, entity => Objectify.save.entity(entity).now, logger) match {
-        case shared.Success(entity) =>
-          Response.ok(gson.toJson(entity.id).toString).build
-        case shared.Failure(throwable) =>
-          errorResponse(throwable)
+      case OK(entity) => gson.toJson(entity.id).toString match {
+        case serialized => Response.ok(serialized).build
       }
-      
-      
-    } catch {
-      case e : Throwable =>
-        errorResponse(e)
+      case KO(throwable) => errorResponse(throwable)
     }
   }
   
+  /**
+   * GET http://localhost:8080/api/v1/resource/123
+   */
+  @GET
+  @Path("{id}")
+  @Produces(Array(MediaType.APPLICATION_JSON))
+  def get(@PathParam("id") id : java.lang.Long) = {
+    
+    logger.info("Get!")
+    
+     read(id) match {
+      case OK(entity) => gson.toJson(entity.r).toString match {
+          case json => Response.ok(json).build
+        }
+      case KO(throwable) => errorResponse(throwable)
+    }
+  }
+
   private def errorResponse(throwable : Throwable) : Response = {
     throwable.printStackTrace()
     errorResponse(throwable.getMessage)
@@ -53,18 +67,4 @@ class JerseyRest extends BackendLogic {
     Response.serverError().entity(message).build
   }
   
-  @GET
-  @Path("{id}")
-  @Produces(Array(MediaType.APPLICATION_JSON))
-  def get(@PathParam("id") id : java.lang.Long) = {
-    
-    logger.info("Get!")
-    
-    Objectify.load.key(Key.create(classOf[ResourceEntity], id)).now match {
-      case null =>
-        errorResponse("Could not find entity.")
-      case entity =>
-        Response.ok(gson.toJson(entity.r).toString).build
-    }
-  }
 }

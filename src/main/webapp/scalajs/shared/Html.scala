@@ -19,7 +19,7 @@ object Html {
     
     val (postFunction, getFunction) = classOf[scalajs.AjaxRest] match {
       case restClass =>
-        (methodPath(restClass, "post"), methodPath(restClass, "get"))
+        (methodPath(restClass, "doPost"), methodPath(restClass, "doGet"))
       }
     val documentReady = methodPath(classOf[scalajs.Document], "ready") // scalajs.Document().ready()
     

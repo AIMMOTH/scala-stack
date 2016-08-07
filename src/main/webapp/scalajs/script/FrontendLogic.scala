@@ -4,20 +4,25 @@ import shared._
 
 trait FrontendLogic {
   
-  def create(getPostValue : () => Integer, postAction : Resource => Unit) : Result[Throwable, Unit] = {
+  def post(value : Integer, postAction : Resource => Unit) : Validated[Throwable, Unit] = {
     
     try {
-      val number = getPostValue()
-      
-      val test = new Resource(x = number)
+      val test = new Resource(x = value)
       
       // Validated with shared logic
       ResourceValidator.apply(test)
       
-      Success(postAction(test))
+      OK(postAction(test))
     } catch {
-      case t : Throwable => 
-        Failure(t)
+      case t : Throwable => KO(t)
+    }
+  }
+  
+  def get(id : Long, getAction : Long => Unit) =  {
+    try {
+      OK(getAction(id))
+    } catch {
+      case t : Throwable => KO(t)
     }
   }
 }

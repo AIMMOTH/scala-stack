@@ -13,16 +13,25 @@ import org.scalajs.jquery.JQueryAjaxSettings
 import shared._
 import shared.Resource
 
+/**
+ * Untested code. Put all logic into FrontendLogic and test it there.
+ */
 @JSExport
 class AjaxRest extends FrontendLogic {
 
   @JSExport
-  def post() = {
+  def doPost() = {
 
-    val result = create(() => jQuery(s"#${Id.resourcePost.toString}").`val`().toString.toInt, resource => {
+    val value = jQuery(s"#${Id.resourcePost.toString}").`val`().toString.toInt
+    
+    /*
+     * Post action is using jQuery ajax and defining success and error.
+     */
+    val postAction : Resource => Unit = resource => {
 
+      // Serialize shared resource with Scala JS code
       val r = resource.asInstanceOf[Dynamic]
-      val s = JSON.stringify(r) // {"x$1":1,"y$1":10}
+      val s = JSON.stringify(r) // {"x$1":1}
       val s2 = s.replaceAll("""(\$1":)""", """":""") // Replace "x$1": with "x":
       
       jQuery.ajax("/api/v1/resource", settings = Dynamic.literal(
@@ -39,17 +48,20 @@ class AjaxRest extends FrontendLogic {
           global.console.dir(jqXhr)
           alert(s"${jqXhr.status}:${jqXhr.statusText}")
         }).asInstanceOf[JQueryAjaxSettings])
-    })
-    result match {
-      case Failure(throwable) => alert(throwable.getMessage)
-      case Success(unit) =>
+    }
+    
+    post(value, postAction) match {
+      case KO(throwable) => alert(throwable.getMessage)
+      case OK(unit) =>
     }
   }
 
   @JSExport
-  def get() = {
-    val id = jQuery(s"#${Id.resourceGet.toString}").`val`()
-    jQuery.ajax("/api/v1/resource/" + id, settings = Dynamic.literal(
+  def doGet() = {
+    
+    val id = jQuery(s"#${Id.resourceGet.toString}").`val`().toString.toLong
+    
+    val getAction : Long => Unit = id => jQuery.ajax("/api/v1/resource/" + id, settings = Dynamic.literal(
       success = { (data: JsAny, textStatus: String, jqXHR: JQueryXHR) =>
 
         jQuery(s"#${Id.resourceOutput.toString}").`val`(JSON.stringify(data))
@@ -59,7 +71,12 @@ class AjaxRest extends FrontendLogic {
       error = { (jqXhr: JQueryXHR, textStatus: String, errorThrown: String) =>
 
         global.console.dir(jqXhr)
-        alert(s"${jqXhr.status}:${jqXhr.statusText}")
+        alert(s"${jqXhr.status}:${jqXhr.responseText}")
       }).asInstanceOf[JQueryAjaxSettings])
+      
+    get(id, getAction) match {
+      case KO(throwable) => alert(throwable.getMessage)
+      case OK(unit) =>
+    }
   }
 }

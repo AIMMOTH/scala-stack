@@ -15,12 +15,16 @@ import scalajs.FrontendLogic
 import com.googlecode.objectify.ObjectifyService
 import com.googlecode.objectify.util.Closeable
 import org.slf4j.LoggerFactory
+import com.google.gson.Gson
+import shared.OK
+import shared.KO
 
 class TransTest {
   
   class TestFrontendLogic extends FrontendLogic
   class TestBackendLogic extends BackendLogic
   
+  private lazy val gson = new Gson
   private val logger = LoggerFactory.getLogger(getClass)
   private val helper = new LocalServiceTestHelper()
   private var closable : Closeable = null
@@ -36,18 +40,39 @@ class TransTest {
     helper.tearDown()
   }
   
+  /**
+   * Test
+   * <ol>
+   * <li>frontend post</li>
+   * <li>backend save</li>
+   * <li>frontend get</li>
+   * <li>backend read</li>
+   * </ol>
+   */
   @Test
   def post : Unit = {
     val frontend = new TestFrontendLogic
     val backend = new TestBackendLogic
     
-    frontend.create(() => 22, resource => {
-      backend.create(resource, entity => Objectify.save.entity(entity).now, logger) match {
-        case shared.Success(resourceEntity) =>
+    frontend.post(22, resource => {
+      backend.create(gson.toJson(resource), logger) match {
+        case OK(resourceEntity) =>
           Assert.assertTrue(resourceEntity.r.x == 22)
           Assert.assertTrue(resourceEntity.id != null)
-        case shared.Failure(throwable) =>
-          throw throwable
+          
+          val long = resourceEntity.id
+          
+          frontend.get(resourceEntity.id, long => ()) match {
+            case OK(unit) => 
+              backend.read(resourceEntity.id) match {
+              case OK(entity) =>
+              Assert.assertTrue(resourceEntity.id == entity.id)
+              case KO(throwable) => throw throwable
+              }
+            case KO(throwable) => throw throwable
+          }
+          
+        case KO(throwable) => throw throwable
       }
     })
   }
