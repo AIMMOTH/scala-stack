@@ -10,7 +10,6 @@ import scala.io.Source
 import java.util.logging.Logger
 import org.slf4j.LoggerFactory
 
-@WebServlet(name = "javaScriptCompilerServlet", urlPatterns = Array("/javascript.js"))
 class JavascriptCompilerServlet extends HttpServlet {
 
   private lazy val log = LoggerFactory.getLogger(getClass)
