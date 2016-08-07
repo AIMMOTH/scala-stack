@@ -14,13 +14,14 @@ import javax.servlet.FilterChain
 import javax.servlet.ServletRequest
 import javax.servlet.ServletResponse
 import javax.servlet.FilterConfig
+import javax.ws.rs.GET
 
 class HtmlFilter extends Filter {
 
   def doFilter(request: ServletRequest, response: ServletResponse, chain : FilterChain) =
     request.asInstanceOf[HttpServletRequest].getRequestURI match {
       case uri if uri.startsWith("/api") => chain.doFilter(request, response)
-      case "/javascript.js" => chain.doFilter(request, response)
+      case "/javascript.js" | "/javascript.min.js" => chain.doFilter(request, response)
       case uri => Route(Some(uri)) match {
           case html => response.getWriter().print(html.toString)
         }

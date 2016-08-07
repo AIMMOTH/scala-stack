@@ -51,9 +51,9 @@ class JavascriptCompilerServlet extends HttpServlet {
 
     findSource(scalaJsSource) map read match {
       case sources =>
-        val optimizer = request.getParameter("optimizer") match {
-          case "full" => Optimizer.Full
-          case _      => Optimizer.Fast
+        val optimizer = request.getRequestURI match {
+          case uri if uri.endsWith(".min.js") => Optimizer.Full
+          case _ => Optimizer.Fast
         }
 
         new ScalaJsCompiler match {

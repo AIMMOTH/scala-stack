@@ -38,7 +38,7 @@
   </servlet>
   <servlet-mapping>
     <servlet-name>JavascriptCompiler</servlet-name>
-    <url-pattern>/javascript.js</url-pattern>
+    <url-pattern>/javascript.js,/javascript.min.js</url-pattern>
   </servlet-mapping>
   
   <filter>

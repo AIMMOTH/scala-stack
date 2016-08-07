@@ -64,7 +64,7 @@ object Html {
             script(src := "/js/vendor/jquery.js"),
             script(src := "/js/vendor/what-input.js"),
             script(src := s"/js/vendor/foundation$min.js"),
-            script(src := "javascript.js" + (if (minified) "?optimizer=full" else "")),
+            script(src := "javascript$min.js"),
             /*
        * Start Foundation
        */
