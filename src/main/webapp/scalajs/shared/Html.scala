@@ -12,7 +12,7 @@ object Id extends Enumeration {
 
 object Html {
   
-  def apply(css: Stylisch, language : Languages.Language = Languages.default, minified: Boolean = false) = {
+  def apply(css: Stylisch, minified: Boolean = false, language : Languages.Language = Languages.default) = {
   
     // From reflection get "package.Class().method()"
     def methodPath(klass : Class[_], methodName : String) = s"${klass.getCanonicalName}().$methodName()"
@@ -64,7 +64,7 @@ object Html {
             script(src := "/js/vendor/jquery.js"),
             script(src := "/js/vendor/what-input.js"),
             script(src := s"/js/vendor/foundation$min.js"),
-            script(src := "javascript.js"),
+            script(src := "javascript.js" + (if (minified) "?optimizer=full" else "")),
             /*
        * Start Foundation
        */

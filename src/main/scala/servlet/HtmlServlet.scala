@@ -14,6 +14,10 @@ import javax.servlet.annotation.WebServlet
 class HtmlServlet extends HttpServlet {
 
   override def doGet(request: HttpServletRequest, response: HttpServletResponse) =
-    response.getWriter().print(Route(Some(request.getRequestURI)).toString)
+    request.getRequestURI match {
+      case uri => Route(Some(uri)) match {
+          case html => response.getWriter().print(html.toString)
+        }
+    }
 
 }
