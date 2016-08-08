@@ -1,4 +1,4 @@
-package shared
+package shared.util
 
 sealed trait Validated[E, A] {
   /** Return `true` if this validation is success. */

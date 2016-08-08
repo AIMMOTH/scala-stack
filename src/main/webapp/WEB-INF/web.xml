@@ -32,18 +32,9 @@
     <url-pattern>/*</url-pattern>
   </filter-mapping>
 
-  <servlet>
-    <servlet-name>JavascriptCompiler</servlet-name>
-    <servlet-class>servlet.JavascriptCompilerServlet</servlet-class>
-  </servlet>
-  <servlet-mapping>
-    <servlet-name>JavascriptCompiler</servlet-name>
-    <url-pattern>/javascript.js,/javascript.min.js</url-pattern>
-  </servlet-mapping>
-  
   <filter>
     <filter-name>HtmlFilter</filter-name>
-    <filter-class>servlet.HtmlFilter</filter-class>
+    <filter-class>filter.HtmlFilter</filter-class>
   </filter>
   <filter-mapping>
     <filter-name>HtmlFilter</filter-name>

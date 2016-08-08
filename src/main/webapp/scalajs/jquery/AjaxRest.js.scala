@@ -1,4 +1,4 @@
-package scalajs
+package jquery
 
 import scala.scalajs.js.{ Any => JsAny }
 import scala.scalajs.js.Dynamic
@@ -12,6 +12,9 @@ import org.scalajs.jquery.JQueryAjaxSettings
 
 import shared._
 import shared.Resource
+import shared.util.OK
+import shared.util.KO
+import jquery.logic.FrontendLogic
 
 /**
  * Untested code. Put all logic into FrontendLogic and test it there.

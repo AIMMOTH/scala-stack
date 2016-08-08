@@ -17,11 +17,11 @@ object Html {
     // From reflection get "package.Class().method()"
     def methodPath(klass : Class[_], methodName : String) = s"${klass.getCanonicalName}().$methodName()"
     
-    val (postFunction, getFunction) = classOf[scalajs.AjaxRest] match {
+    val (postFunction, getFunction) = classOf[jquery.AjaxRest] match {
       case restClass =>
         (methodPath(restClass, "doPost"), methodPath(restClass, "doGet"))
       }
-    val documentReady = methodPath(classOf[scalajs.Document], "ready") // scalajs.Document().ready()
+    val documentReady = methodPath(classOf[jquery.Document], "ready") // scalajs.Document().ready()
     
     val min = if (minified) ".min" else ""
 

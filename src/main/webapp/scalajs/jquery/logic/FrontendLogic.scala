@@ -1,6 +1,9 @@
-package scalajs
+package jquery.logic
 
 import shared._
+import shared.util.Validated
+import shared.util.OK
+import shared.util.KO
 
 trait FrontendLogic {
   

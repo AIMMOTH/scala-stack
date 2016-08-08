@@ -1,19 +1,16 @@
 package api
 
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
+
+import com.google.gson.Gson
+
+import api.logic.BackendLogic
+import datastore.entity.ResourceEntity
 import javax.ws.rs._
 import javax.ws.rs.core._
-import com.google.gson.Gson
-import com.googlecode.objectify.Key
-import shared.ResourceValidator
-import datastore.Objectify
-import com.googlecode.objectify.annotation.Cache
-import com.googlecode.objectify.annotation.Entity
-import shared.Resource
-import datastore.entity.ResourceEntity
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import shared.OK
-import shared.KO
+import shared.util.OK
+import shared.util.KO
 
 /**
  * Untested code. All logic is put into BackendLogic

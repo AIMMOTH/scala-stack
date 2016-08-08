@@ -1,4 +1,4 @@
-package servlet
+package filter
 
 import javax.servlet.http.HttpServlet
 import javax.servlet.http.HttpServletRequest
@@ -15,17 +15,23 @@ import javax.servlet.ServletRequest
 import javax.servlet.ServletResponse
 import javax.servlet.FilterConfig
 import javax.ws.rs.GET
+import filter.compiler.JavascriptCompiler
 
 class HtmlFilter extends Filter {
 
-  def doFilter(request: ServletRequest, response: ServletResponse, chain : FilterChain) =
-    request.asInstanceOf[HttpServletRequest].getRequestURI match {
-      case uri if uri.startsWith("/api") => chain.doFilter(request, response)
-      case "/javascript.js" | "/javascript.min.js" => chain.doFilter(request, response)
+  override def doFilter(request: ServletRequest, response: ServletResponse, chain : FilterChain) = {
+    
+    implicit def toHttpRequest(request : ServletRequest) = request.asInstanceOf[HttpServletRequest]
+    implicit def toHttpResponse(response: ServletResponse) = response.asInstanceOf[HttpServletResponse]
+    
+    request.getRequestURI match {
+      case uri if uri.startsWith("/api") => chain.doFilter(request, response) // Jersey
+      case uri if uri.startsWith("/javascript") => JavascriptCompiler(request, response)
       case uri => Route(Some(uri)) match {
           case html => response.getWriter().print(html.toString)
         }
     }
+  }
 
   def destroy(): Unit = {}
 

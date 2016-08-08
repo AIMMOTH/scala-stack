@@ -1,4 +1,4 @@
-package scalajs
+package jquery
 
 import scala.scalajs.js._
 import scala.scalajs.js.annotation.JSExport

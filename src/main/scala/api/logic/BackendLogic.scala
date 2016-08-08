@@ -1,10 +1,14 @@
-package api
+package api.logic
 
 import datastore.entity.ResourceEntity
 import shared._
 import datastore.Objectify
 import com.google.gson.Gson
 import com.googlecode.objectify.Key
+import shared.util.Validated
+import shared.util.OK
+import shared.util.KO
+import shared.Resource
 
 /**
  * Logic to test

@@ -1,16 +1,13 @@
-package servlet
+package filter.compiler
 
-import javax.servlet.annotation.WebServlet
 import javax.servlet.http.HttpServletResponse
 import javax.servlet.http.HttpServletRequest
 import fiddle.ScalaJsCompiler
-import javax.servlet.http.HttpServlet
 import fiddle.Optimizer
 import scala.io.Source
-import java.util.logging.Logger
 import org.slf4j.LoggerFactory
 
-class JavascriptCompilerServlet extends HttpServlet {
+object JavascriptCompiler {
 
   private lazy val log = LoggerFactory.getLogger(getClass)
 
@@ -31,7 +28,7 @@ class JavascriptCompilerServlet extends HttpServlet {
     s"scalajs-dom_$versions-0.9.1.jar",
     s"sourcecode_$versions-0.1.1.jar")
 
-  override def doGet(request: HttpServletRequest, response: HttpServletResponse) = {
+  def apply(request: HttpServletRequest, response: HttpServletResponse) = {
 
     import scala.collection.JavaConversions._
 
