@@ -1,11 +1,11 @@
-package shared
+package shared.html
 
 import scalatags.Text.all._
 import scalatags.Text.tags2.{ title => title2 }
 
-object Four04 {
+object ClientError {
   
-  def apply() = {
+  def NotFound() = {
     html(
         head(
             title2("404")

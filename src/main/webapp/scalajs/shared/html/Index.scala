@@ -1,8 +1,13 @@
-package shared
+package shared.html
 
 import scalatags.Text.all._
-import scalatags.Text.all.{ `type` => type_ }
 import scalatags.stylesheet._
+import jquery.AjaxRest
+import jquery.Document
+import shared.Languages
+import shared.Stylisch
+import shared.Translations
+import scalatags.Text.all.{ `type` => type_ }
 import scalatags.Text.tags2.{ style => style2, title => title2 }
 
 object Id extends Enumeration {
@@ -10,7 +15,7 @@ object Id extends Enumeration {
   val javascriptAlert, resourcePostButton, resourceGetButton, resourcePost, resourceGet, resourceOutput = Value
 }
 
-object Html {
+object Index {
   
   def apply(css: Stylisch, minified: Boolean = false, language : Languages.Language = Languages.default) = {
   

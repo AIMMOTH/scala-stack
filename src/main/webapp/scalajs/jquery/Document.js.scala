@@ -4,6 +4,7 @@ import scala.scalajs.js._
 import scala.scalajs.js.annotation.JSExport
 import org.scalajs.jquery.jQuery
 import shared._
+import shared.html.Id
 
 @JSExport
 class Document {

@@ -15,6 +15,7 @@ import shared.Resource
 import shared.util.OK
 import shared.util.KO
 import jquery.logic.FrontendLogic
+import shared.html.Id
 
 /**
  * Untested code. Put all logic into FrontendLogic and test it there.
