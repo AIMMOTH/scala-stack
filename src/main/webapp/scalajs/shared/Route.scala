@@ -10,11 +10,13 @@ object Route {
   
   def apply(uri: String)(implicit logger : Logger = LoggerFactory.getLogger(getClass)) : Either[String, TypedTag[String]] = {
     
-    val map = new java.util.HashMap[String, String]();
+    val paths = scala.collection.mutable.Seq()
     val template = new UriTemplate("/{language}/{page}");
-    template.`match`(uri, map)
     
-    logger.info(s"mapping $map")
+    import scala.collection.JavaConversions._
+    template.`match`(uri, paths)
+    
+    logger.info(s"mapping $paths")
     
     uri match {
       case "/" => Left(s"/${Languages.default.code}/")

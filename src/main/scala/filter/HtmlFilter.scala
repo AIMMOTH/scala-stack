@@ -41,7 +41,9 @@ class HtmlFilter extends Filter {
           }
       }
     } catch {
-      case error : Throwable => response.getWriter.print(ServerError.InternalServerError().toString)
+      case error : Throwable =>
+        error.printStackTrace()
+        response.getWriter.print(ServerError.InternalServerError().toString)
     }
   }
 
