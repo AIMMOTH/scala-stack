@@ -35,7 +35,7 @@ class HtmlFilter extends Filter {
       request.getRequestURI match {
         case uri if uri.startsWith("/api") => chain.doFilter(request, response) // Jersey
         case uri if uri.startsWith("/javascript") => JavascriptCompiler(request, response)
-        case uri => Route(uri) match {
+        case uri => Route(uri)(logger.info) match {
             case Right(html) => response.getWriter.print(html.toString)
             case Left(redirect) => response.sendRedirect(redirect) 
           }

@@ -3,8 +3,10 @@ package shared
 object Languages {
   final case class Language(val name : String, val defaultName : String, val code : String)
   
-  val default = Language("Default", "Default language (English)", "en-GB")
-  val svenska = Language("Svenska", "Swedish", "se-SV")
+  val default = Language("Default", "Default language (English)", "en-gb")
+  val svenska = Language("Svenska", "Swedish", "se-sv")
+  
+  lazy val all = List(default, svenska)
 }
 
 object Translations {
