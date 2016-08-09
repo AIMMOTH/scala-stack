@@ -34,6 +34,9 @@ class HtmlFilter extends Filter {
       
       request.getRequestURI match {
         case uri if uri.startsWith("/api") => chain.doFilter(request, response) // Jersey
+        case uri if uri.startsWith("/js") => chain.doFilter(request, response) // Javascript
+        case uri if uri.startsWith("/css") => chain.doFilter(request, response) // CSS
+        case "/favicon.ico" => chain.doFilter(request, response) // Icon
         case uri if uri.startsWith("/javascript") => JavascriptCompiler(request, response)
         case uri => Route(uri)(logger.info) match {
             case Right(html) => response.getWriter.print(html.toString)

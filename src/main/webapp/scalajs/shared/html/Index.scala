@@ -69,7 +69,7 @@ object Index {
             script(src := "/js/vendor/jquery.js"),
             script(src := "/js/vendor/what-input.js"),
             script(src := s"/js/vendor/foundation$min.js"),
-            script(src := "javascript$min.js"),
+            script(src := s"/javascript$min.js"),
             /*
        * Start Foundation
        */
