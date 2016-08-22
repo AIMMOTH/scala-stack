@@ -7,13 +7,14 @@ import scalatags.Text.TypedTag
 import shared.html.ClientError
 import shared.html.Index
 import shared.html.ServerError
+import shared.util.JsLogger
 
 object Route {
 
   /**
    * Either redirects or responds with an HTML page
    */
-  def apply(uri: String)(implicit logger: String => Unit = println) : Either[String, TypedTag[String]] = {
+  def apply(uri: String)(implicit logger: JsLogger) : Either[String, TypedTag[String]] = {
 
     /*
      * 1 Read uri until '?' 
@@ -23,7 +24,7 @@ object Route {
      */
     val path = uri.takeWhile(_ != '?').split("/").drop(1).toList
 
-    logger(s"Routing ${path.mkString(",")}")
+    logger.debug(s"Routing ${path.mkString(",")}")
 
     // Find the bug!
     path match {
