@@ -1,5 +1,7 @@
 package shared.util
 
+import scala.scalajs.js.Dynamic
+
 trait JsLogger {
 
   def info(message: String): Unit
@@ -15,10 +17,10 @@ object JsLogger {
    */
   def apply(console: Dynamic) = {
     new JsLogger {
-      def info(message: String): Unit = console.log(message)
+      def info(message: String): Unit = console.info(message)
       def debug(message: String): Unit = console.log(message)
-      def warning(message: String): Unit = console.log(message)
-      def warning(throwable: Throwable): Unit = console.log(throwable.getMessage)
+      def warning(message: String): Unit = console.warn(message)
+      def warning(throwable: Throwable): Unit = console.trace(throwable.getMessage)
       def error(message: String): Unit = console.error(message)
 
     }
