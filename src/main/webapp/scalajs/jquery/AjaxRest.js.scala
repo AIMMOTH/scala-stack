@@ -16,6 +16,7 @@ import shared.util.OK
 import shared.util.KO
 import jquery.logic.FrontendLogic
 import shared.html.Id
+import shared.util.JsLogger
 
 /**
  * Untested code. Put all logic into FrontendLogic and test it there.
@@ -23,6 +24,8 @@ import shared.html.Id
 @JSExport
 class AjaxRest extends FrontendLogic {
 
+  private lazy implicit val logger = JsLogger(global.console)
+  
   @JSExport
   def doPost() = {
 

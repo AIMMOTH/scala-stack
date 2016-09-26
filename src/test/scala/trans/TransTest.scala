@@ -18,19 +18,21 @@ import org.slf4j.LoggerFactory
 import com.google.gson.Gson
 import shared.util.OK
 import shared.util.KO
+import builder.LoggerBuilder
 
 class TransTest {
   
   class TestFrontendLogic extends FrontendLogic
   class TestBackendLogic extends BackendLogic
   
-  private lazy val gson = new Gson
-  private val logger = LoggerFactory.getLogger(getClass)
-  private val helper = new LocalServiceTestHelper()
-  private var closable : Closeable = null
+  lazy val gson = new Gson
+  val logger = LoggerFactory.getLogger(getClass)
+  implicit def jsLogger = LoggerBuilder(logger)
+  val helper = new LocalServiceTestHelper()
+  var closable : Closeable = null
   
   @Before def before : Unit = {
-      helper.setUp();
+    helper.setUp();
     Objectify.registerClasses()
     closable = ObjectifyService.begin()
   }
@@ -55,7 +57,7 @@ class TransTest {
     val backend = new TestBackendLogic
     
     frontend.post(22, resource => {
-      backend.create(gson.toJson(resource), logger) match {
+      backend.create(gson.toJson(resource)) match {
         case OK(resourceEntity) =>
           Assert.assertTrue(resourceEntity.r.x == 22)
           Assert.assertTrue(resourceEntity.id != null)

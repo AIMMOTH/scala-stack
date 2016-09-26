@@ -203,6 +203,7 @@
           </execution>
         </executions>
       </plugin>
+      
       <plugin>
         <groupId>org.scala-tools</groupId>
         <artifactId>maven-scala-plugin</artifactId>
@@ -223,6 +224,7 @@
           </jvmArgs>
         </configuration>
       </plugin>
+      
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <version>3.3</version>
@@ -232,6 +234,7 @@
           <target>1.8</target>
         </configuration>
       </plugin>
+      
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-war-plugin</artifactId>
@@ -253,6 +256,7 @@
       <!-- <artifactId>appengine-maven-plugin</artifactId> -->
       <!-- <version>${appengine.version}</version> -->
       <!-- </plugin> -->
+      
       <plugin>
         <groupId>com.google.appengine</groupId>
         <artifactId>gcloud-maven-plugin</artifactId>

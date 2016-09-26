@@ -11,6 +11,7 @@ import javax.ws.rs._
 import javax.ws.rs.core._
 import shared.util.OK
 import shared.util.KO
+import builder.LoggerBuilder
 
 /**
  * Untested code. All logic is put into BackendLogic
@@ -20,6 +21,7 @@ class JerseyRest extends BackendLogic {
   
   private lazy val gson = new Gson
   private lazy val logger = LoggerFactory.getLogger(getClass)
+  private implicit lazy val jsLogger = LoggerBuilder(logger)
   
   /**
    * POST http://localhost:8080/api/v1/resource
@@ -28,7 +30,7 @@ class JerseyRest extends BackendLogic {
   @Produces(Array(MediaType.APPLICATION_JSON))
   def post(@FormParam("x") json : String) = {
     
-    create(json, logger) match {
+    create(json) match {
       
       case OK(entity) => gson.toJson(entity.id).toString match {
         case serialized => Response.ok(serialized).build

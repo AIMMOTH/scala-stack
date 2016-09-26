@@ -9,6 +9,7 @@ import shared.util.Validated
 import shared.util.OK
 import shared.util.KO
 import shared.Resource
+import shared.util.JsLogger
 
 /**
  * Logic to test
@@ -17,7 +18,7 @@ trait BackendLogic {
 
   private lazy val gson = new Gson
 
-  def create(json: String, log : org.slf4j.Logger) : Validated[Throwable, ResourceEntity] = {
+  def create(json: String)(implicit log : JsLogger) : Validated[Throwable, ResourceEntity] = {
 
     log.info("Post!")
     

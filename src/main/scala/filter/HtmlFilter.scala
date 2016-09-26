@@ -37,10 +37,6 @@ class HtmlFilter extends Filter {
       request.getRequestURI match {
 
         case uri if uri.startsWith("/javascript") => JavascriptCompiler(request, response)
-        case uri => Route(uri) match {
-          case Right(html)    => response.getWriter.print(html.toString)
-          case Left(redirect) => response.sendRedirect(redirect)
-        }
         case uri if uri.startsWith("/api")        => chain.doFilter(request, response) // Jersey
         case "/favicon.ico"                       => chain.doFilter(request, response) // Icon
         /*
@@ -48,6 +44,10 @@ class HtmlFilter extends Filter {
          */
         case uri if uri.startsWith("/js")         => chain.doFilter(request, response) // Javascript
         case uri if uri.startsWith("/css")        => chain.doFilter(request, response) // CSS
+        case uri => Route(uri) match {
+          case Right(html)    => response.getWriter.print(html.toString)
+          case Left(redirect) => response.sendRedirect(redirect)
+        }
       }
     } catch {
       case error: Throwable =>
