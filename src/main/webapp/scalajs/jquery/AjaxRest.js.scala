@@ -38,8 +38,13 @@ class AjaxRest extends FrontendLogic {
 
       // Serialize shared resource with Scala JS code
       val r = resource.asInstanceOf[Dynamic]
+      global.console.dir(r)
+      
       val s = JSON.stringify(r) // {"x$1":1}
+      global.console.log(s)
+
       val s2 = s.replaceAll("""(\$1":)""", """":""") // Replace "x$1": with "x":
+      global.console.log(s2)
       
       jQuery.ajax("/api/v1/resource", settings = Dynamic.literal(
         data = "x=" + s2,
