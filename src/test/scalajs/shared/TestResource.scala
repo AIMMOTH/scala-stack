@@ -1,6 +1,6 @@
 package shared
 
-import shared._
+import scalajs.shared._
 import scala.scalajs.js.Dynamic
 import org.junit.Test
 import org.junit.Assert

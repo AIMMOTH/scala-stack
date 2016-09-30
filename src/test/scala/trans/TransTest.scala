@@ -9,16 +9,16 @@ import com.google.appengine.tools.development.testing.LocalServiceTestHelper
 import com.googlecode.objectify.annotation.Cache
 import com.googlecode.objectify.annotation.Entity
 
-import api.logic.BackendLogic
-import datastore.Objectify
-import jquery.logic.FrontendLogic
+import jvm.api.logic.BackendLogic
+import jvm.datastore.Objectify
+import scalajs.jquery.logic.FrontendLogic
 import com.googlecode.objectify.ObjectifyService
 import com.googlecode.objectify.util.Closeable
 import org.slf4j.LoggerFactory
 import com.google.gson.Gson
-import shared.util.OK
-import shared.util.KO
-import builder.LoggerBuilder
+import scalajs.shared.util.OK
+import scalajs.shared.util.KO
+import jvm.builder.LoggerBuilder
 
 class TransTest {
   

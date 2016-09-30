@@ -9,7 +9,7 @@
 
   <packaging>war</packaging>
   <name>Scala Stack</name>
-  <version>1.0-SNAPSHOT</version>
+  <version>0.1</version>
 
   <description>Scala Stack using Google Flexible Environment with backend producing HTML, CSS and JavaScript with out any files (.html, .css, .sass, .less, .js) and with out any frontend builders like Gulp or Grunt.</description>
 
@@ -51,7 +51,7 @@
     <dependency>
       <groupId>com.github.aimmoth.compiler.jetty</groupId>
       <artifactId>jetty-scalajs-compiler</artifactId>
-      <version>1.0</version>
+      <version>0.2</version>
     </dependency>
     <dependency>
       <groupId>com.googlecode.objectify</groupId>
@@ -183,7 +183,13 @@
             </goals>
             <configuration>
               <sources>
-                <source>src/main/webapp/scalajs</source>
+              
+                <!-- IMPORTANT -->
+                <!-- This is also set in JavascriptCompiler.scala -->
+              
+                <source>src/main/webapp/scalajs-source</source>
+                
+                
               </sources>
             </configuration>
           </execution>

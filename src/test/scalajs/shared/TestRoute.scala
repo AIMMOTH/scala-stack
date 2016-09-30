@@ -1,8 +1,8 @@
-package shared
+package scalajs.shared
 
 import scalatags.Text.all._
 import org.slf4j.LoggerFactory
-import builder.LoggerBuilder
+import jvm.builder.LoggerBuilder
 import scalatags.Text._
 import org.junit.Test
 import org.junit.Assert
