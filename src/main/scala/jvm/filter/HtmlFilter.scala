@@ -24,40 +24,30 @@ import jvm.builder.LoggerBuilder
 
 class HtmlFilter extends Filter {
 
-  implicit val logger = LoggerBuilder(LoggerFactory.getLogger(getClass)) 
+  implicit val logger = LoggerBuilder(LoggerFactory.getLogger(getClass))
 
-  override def doFilter(request: ServletRequest, response: ServletResponse, chain: FilterChain) = {
+  override def doFilter(request : ServletRequest, response : ServletResponse, chain : FilterChain) = {
 
     try {
-      implicit def toHttpRequest(request: ServletRequest) = request.asInstanceOf[HttpServletRequest]
-      implicit def toHttpResponse(response: ServletResponse) = response.asInstanceOf[HttpServletResponse]
+      implicit def toHttpRequest(request : ServletRequest) = request.asInstanceOf[HttpServletRequest]
+      implicit def toHttpResponse(response : ServletResponse) = response.asInstanceOf[HttpServletResponse]
 
       logger.debug(request.getRequestURI)
 
-      request.getRequestURI match {
-
-        case uri if uri.startsWith("/javascript") => JavascriptCompiler(request, response)
-        case uri if uri.startsWith("/api")        => chain.doFilter(request, response) // Jersey
-        case "/favicon.ico"                       => chain.doFilter(request, response) // Icon
-        /*
-         * These resources should be bundled into the HTML output and not used as separate files
-         */
-        case uri if uri.startsWith("/js")         => chain.doFilter(request, response) // Javascript
-        case uri if uri.startsWith("/css")        => chain.doFilter(request, response) // CSS
-        case uri => Route(uri) match {
-          case Right(html)    => response.getWriter.print(html.toString)
-          case Left(redirect) => response.sendRedirect(redirect)
-        }
+      Route(request.getRequestURI) match {
+        case Some(Right(html))    => response.getWriter.println(html.toString)
+        case Some(Left(redirect)) => response.sendRedirect(redirect)
+        case None                 => chain.doFilter(request, response)
       }
     } catch {
-      case error: Throwable =>
+      case error : Throwable =>
         error.printStackTrace()
         response.getWriter.print(ServerError.InternalServerError().toString)
     }
   }
 
-  def destroy(): Unit = {}
+  def destroy() : Unit = {}
 
-  def init(config: FilterConfig): Unit = {}
+  def init(config : FilterConfig) : Unit = {}
 
 }

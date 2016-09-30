@@ -9,7 +9,7 @@
 
   <packaging>war</packaging>
   <name>Scala Stack</name>
-  <version>0.1</version>
+  <version>0.2-SNAPSHOT</version>
 
   <description>Scala Stack using Google Flexible Environment with backend producing HTML, CSS and JavaScript with out any files (.html, .css, .sass, .less, .js) and with out any frontend builders like Gulp or Grunt.</description>
 

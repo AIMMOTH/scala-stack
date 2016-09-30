@@ -12,9 +12,11 @@ import scalajs.shared.util.JsLogger
 object Route {
 
   /**
-   * Either redirects or responds with an HTML page
+   * Finds a redirect or an HTML page.
    */
-  def apply(uri: String)(implicit logger: JsLogger) : Either[String, TypedTag[String]] = {
+  def apply(uri : String)(implicit logger : JsLogger) : Option[Either[String, TypedTag[String]]] = {
+
+    logger.debug(s"Routing $uri")
 
     /*
      * 1 Read uri until '?' 
@@ -22,22 +24,28 @@ object Route {
      * 3 Drop first empty string since split on "/path" gives Array("", "path")
      * 4 To list 
      */
-    val path = uri.takeWhile(_ != '?').split("/").drop(1).toList
+    uri.takeWhile(_ != '?').split("/").drop(1).toList match {
 
-    logger.debug(s"Routing ${path.mkString(",")}")
+      case Nil => Some(Left(s"/${Languages.default.code}/index.min.html")) // Redirect
 
-    // Find the bug!
-    path match {
-      case Nil => Left(s"/${Languages.default.code}/index.min.html") // Redirect
-      case language :: file :: Nil if file.startsWith("index") =>
-        (file.endsWith(".min.html"), Languages.all.find(_.code == language)) match {
-          case (minified, Some(language)) => Right(Index(new Stylisch, minified, language))
-          case (minified, None)           => Left(s"/${Languages.default.code}/index.min.html") // Unknown language, redirect
+      case subfolder :: subfolders => subfolder match {
+        case "javascript"  => None
+        case "api"         => None
+        case "favicon.ico" => None
+        case "js"          => None
+        case "css"         => None
+        case "404"         => Some(Right(ClientError.NotFound()))
+        case "5xx"         => Some(Right(ServerError.InternalServerError()))
+
+        case languageCode => (Languages.all.find(_.code == languageCode), subfolders.head.split(".").toList) match {
+          case (Some(language), file) => file match {
+            case "index" :: fileparts => Some(Right(Index(new Stylisch, fileparts(0) == "min", language)))
+            case _                    => Some(Left("/404")) // Redirect
+          }
+          case (None, Nil)  => Some(Left(s"/${Languages.default.code}/index.min.html")) // Unknown language, redirect to index
+          case (None, file) => Some(Left(s"/${Languages.default.code}/$file")) // Unknown language, redirect
         }
-      case "404" :: Nil => Right(ClientError.NotFound())
-      case "5xx" :: Nil => Right(ServerError.InternalServerError())
-      case _            => Left("/404") // Redirect
+      }
     }
-    // Answer /en-gb/index.stuff.min.html is the same as /en-gb/index.min.html
   }
 }
