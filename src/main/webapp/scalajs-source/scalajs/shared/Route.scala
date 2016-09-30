@@ -18,6 +18,9 @@ object Route {
 
     logger.debug(s"Routing $uri")
 
+    implicit def htmlToSomeRight(html : TypedTag[String]) = Some(Right(html))
+    implicit def stringToSomeLeft(redirect : String) = Some(Left(redirect))
+
     /*
      * 1 Read uri until '?' 
      * 2 Split by '/'
@@ -29,21 +32,20 @@ object Route {
       case Nil => Some(Left(s"/${Languages.default.code}/index.min.html")) // Redirect
 
       case subfolder :: subfolders => subfolder match {
-        case "javascript"  => None
-        case "api"         => None
-        case "favicon.ico" => None
-        case "js"          => None
-        case "css"         => None
-        case "404"         => Some(Right(ClientError.NotFound()))
-        case "5xx"         => Some(Right(ServerError.InternalServerError()))
+        case "api"                                   => None
+        case "favicon.ico"                           => None
+        case "js"                                    => None
+        case "css"                                   => None
 
         case languageCode => (Languages.all.find(_.code == languageCode), subfolders.head.split(".").toList) match {
-          case (Some(language), file) => file match {
-            case "index" :: fileparts => Some(Right(Index(new Stylisch, fileparts(0) == "min", language)))
-            case _                    => Some(Left("/404")) // Redirect
+          case (Some(language), fileparts) => fileparts match {
+            case "index" :: _ => Index(new Stylisch, fileparts(0) == "min", language)
+            case "404" :: _   => ClientError.NotFound(language)
+            case "5xx" :: _   => ServerError.InternalServerError(language)
+            case _            => s"/$languageCode/404" // Redirect
           }
-          case (None, Nil)  => Some(Left(s"/${Languages.default.code}/index.min.html")) // Unknown language, redirect to index
-          case (None, file) => Some(Left(s"/${Languages.default.code}/$file")) // Unknown language, redirect
+          case (None, Nil) => s"/${Languages.default.code}/index.min.html" // Unknown language, redirect to index
+          case _           => s"/${Languages.default.code}/404" // Unknown language, redirect
         }
       }
     }

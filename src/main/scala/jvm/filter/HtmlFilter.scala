@@ -32,17 +32,19 @@ class HtmlFilter extends Filter {
       implicit def toHttpRequest(request : ServletRequest) = request.asInstanceOf[HttpServletRequest]
       implicit def toHttpResponse(response : ServletResponse) = response.asInstanceOf[HttpServletResponse]
 
-      logger.debug(request.getRequestURI)
-
-      Route(request.getRequestURI) match {
-        case Some(Right(html))    => response.getWriter.println(html.toString)
-        case Some(Left(redirect)) => response.sendRedirect(redirect)
-        case None                 => chain.doFilter(request, response)
+      request.getRequestURI match {
+        case uri if uri.startsWith("/javascript") => JavascriptCompiler(request, response)
+        case uri => Route(uri) match {
+          case Some(Right(html))    => response.getWriter.println(html.toString)
+          case Some(Left(redirect)) => response.sendRedirect(redirect)
+          case None                 => chain.doFilter(request, response)
+        }
       }
+
     } catch {
       case error : Throwable =>
         error.printStackTrace()
-        response.getWriter.print(ServerError.InternalServerError().toString)
+        response.getWriter.print(ServerError.InternalServerError(Languages.default).toString)
     }
   }
 
