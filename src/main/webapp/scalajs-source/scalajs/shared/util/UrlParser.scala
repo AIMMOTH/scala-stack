@@ -58,7 +58,7 @@ class UrlParser extends RegexParsers {
   def domains = repsep(notDotOrColonOrSlashOrQuestionmarkOrHash, ".")
   def port = numbers ^^ { case number => number.toInt }
   
-  def path = repsep(notSlashOrQuestionmark, "/")
+  def path = repsep(notSlashOrQuestionmark | "", "/")
   def query = repsep(pair, "&")
   def pair = encoded ~ "=" ~ opt(encoded) ^^ { case key ~ equal ~ optionalValue => (key, optionalValue) }
   
