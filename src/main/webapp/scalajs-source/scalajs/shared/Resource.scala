@@ -8,6 +8,7 @@ import scala.scalajs.js.annotation.JSExportAll
  * and also needs to be able to export all to Scala JS as Javascript object.
  */
 @JSExportAll
-sealed case class Resource(var x : Integer = 0) {
-  def this() = this(x = 0)
+case class Resource(var x : Int) {
+  
+  def this() = this(0)
 }

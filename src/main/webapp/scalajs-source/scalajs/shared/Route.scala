@@ -32,10 +32,10 @@ object Route {
       case Nil => Some(Left(s"/${Languages.default.code}/index.min.html")) // Redirect
 
       case subfolder :: subfolders => subfolder match {
-        case "api"                                   => None
-        case "favicon.ico"                           => None
-        case "js"                                    => None
-        case "css"                                   => None
+        case "api"         => None
+        case "favicon.ico" => None
+        case "js"          => None
+        case "css"         => None
 
         case languageCode => (Languages.all.find(_.code == languageCode), subfolders.head.split(".").toList) match {
           case (Some(language), fileparts) => fileparts match {

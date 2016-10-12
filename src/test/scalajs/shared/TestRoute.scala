@@ -15,7 +15,7 @@ class TestRoute {
   @Test
   def testRoute: Unit = {
     Route("/en-gb/index.html") match {
-      case Right(html) =>
+      case Some(Right(html)) =>
         val rendered = html.render
         val xml = XML.loadString(rendered)
         xml.child match {
@@ -24,8 +24,10 @@ class TestRoute {
             Assert.assertEquals(body.label, "body")
             Assert.assertTrue(body.descendant.find(element => element.label == "a" && element \@ "href" == "https://github.com/AIMMOTH/scala-stack/tree/jquery").isDefined)
         }
-      case Left(error) =>
+      case Some(Left(error)) =>
         throw new Exception(error)
+      case None =>
+        throw new Exception("Should have found page")
     }
 
   }

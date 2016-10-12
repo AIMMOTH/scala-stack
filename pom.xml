@@ -116,6 +116,11 @@
       <artifactId>scalatags_sjs0.6_2.11</artifactId>
       <version>0.6.0</version>
     </dependency>
+    <dependency>
+      <groupId>com.lihaoyi</groupId>
+      <artifactId>upickle_sjs0.6_2.11</artifactId>
+      <version>0.4.1</version>
+    </dependency>
 
     <dependency>
       <groupId>commons-codec</groupId>
