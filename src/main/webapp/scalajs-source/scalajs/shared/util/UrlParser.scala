@@ -34,14 +34,14 @@ case class UrlTokens(
 class UrlParser extends RegexParsers {
 
   def expression = all ^^ {
-    case (scheme, ((authorization, domains, port), path, query )) =>
+    case (scheme, ((authorization, domains, port), path, query)) =>
       new UrlTokens(scheme, authorization, domains, port, path, query)
   }
   
   val notSlash = """[^\/]+""".r 
   val notDot = """[^\.]+""".r
   val notColon = """[^:]+""".r
-  val notDotOrColon = """[^:\.]+""".r
+  val notDotOrColonOrSlashOrQuestionmark = """[^:\.\/\?]+""".r
   val notAt = """[^@]+""".r
   val notSlashOrQuestionmark = """[^\/\?]+""".r
   val numbers = """\d+""".r
@@ -54,7 +54,7 @@ class UrlParser extends RegexParsers {
   def domain = opt(authorization <~ "@") ~ domains ~ opt(":" ~> port) ^^ { case optionalAuthorization ~ domains ~ optionalPort => (optionalAuthorization, domains, optionalPort) }
 
   def authorization = notColon ~ opt(":" ~> notAt) ^^ { case user ~ optionalPassword => (user, optionalPassword) }
-  def domains = repsep(notDotOrColon, ".")
+  def domains = repsep(notDotOrColonOrSlashOrQuestionmark, ".")
   def port = numbers ^^ { case number => number.toInt }
   
   def path = repsep(notSlashOrQuestionmark, "/")
