@@ -8,7 +8,8 @@ case class UrlTokens(
     domains : List[String],
     port : Option[Int],
     path : Option[List[String]],
-    query : Option[List[(String, Option[String])]]
+    query : Option[List[(String, Option[String])]],
+    fragment : Option[List[(String, Option[String])]]
   )
 
 /**
@@ -24,37 +25,37 @@ case class UrlTokens(
  * </p>
  * <ol>
  * <li>Divide full URL at optional "://" to get scheme and "domain and" (the rest)</li>
- * <li>Divide "domain and" at optional "/" and optional "?" to get domain and/or path and/or query</li>
+ * <li>Divide "domain and" at optional "/" and optional "?" and optional "#" to get domain and/or path and/or query and/or fragment</li>
  * <li>Divide domain to optional authorization, domains and optional port</li>
  * <li>Divide path by "/"</li>
- * <li>Divide query by "&" and divide each pair at "=" to get key and optional value</li>
+ * <li>Divide query and fragment by "&" and divide each pair at "=" to get key and optional value</li>
  * <ol>
  * 
  */
 class UrlParser extends RegexParsers {
 
   def expression = all ^^ {
-    case (scheme, ((authorization, domains, port), path, query)) =>
-      new UrlTokens(scheme, authorization, domains, port, path, query)
+    case (scheme, ((authorization, domains, port), path, query, fragment)) =>
+      new UrlTokens(scheme, authorization, domains, port, path, query, fragment)
   }
   
   val notSlash = """[^\/]+""".r 
   val notDot = """[^\.]+""".r
   val notColon = """[^:]+""".r
-  val notDotOrColonOrSlashOrQuestionmark = """[^:\.\/\?]+""".r
+  val notDotOrColonOrSlashOrQuestionmarkOrHash = """[^:\.\/\?\#]+""".r
   val notAt = """[^@]+""".r
   val notSlashOrQuestionmark = """[^\/\?]+""".r
   val numbers = """\d+""".r
-  val encoded = """[^\=\&\/]+""".r
+  val encoded = """[^\=\&\/\#]+""".r
   
   def all = opt(notColon <~ "://") ~ domainAnd ^^ { case optionalScheme ~ domainAnd => (optionalScheme, domainAnd) }
   
-  def domainAnd = domain ~ opt("/" ~> path) ~ opt("?" ~> query) ^^ { case domain ~ optionalPath ~ optionalQuery => (domain, optionalPath, optionalQuery) }
+  def domainAnd = domain ~ opt("/" ~> path) ~ opt("?" ~> query) ~ opt("#" ~> query) ^^ { case domain ~ optionalPath ~ optionalQuery ~ optionalFragment=> (domain, optionalPath, optionalQuery, optionalFragment) }
   
   def domain = opt(authorization <~ "@") ~ domains ~ opt(":" ~> port) ^^ { case optionalAuthorization ~ domains ~ optionalPort => (optionalAuthorization, domains, optionalPort) }
 
   def authorization = notColon ~ opt(":" ~> notAt) ^^ { case user ~ optionalPassword => (user, optionalPassword) }
-  def domains = repsep(notDotOrColonOrSlashOrQuestionmark, ".")
+  def domains = repsep(notDotOrColonOrSlashOrQuestionmarkOrHash, ".")
   def port = numbers ^^ { case number => number.toInt }
   
   def path = repsep(notSlashOrQuestionmark, "/")
