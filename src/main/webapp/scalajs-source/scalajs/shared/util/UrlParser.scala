@@ -1,16 +1,16 @@
 package scalajs.shared.util
 
+// https://github.com/scala/scala-parser-combinators
 import scala.util.parsing.combinator.RegexParsers
 
 case class UrlTokens(
-    scheme : Option[String],
-    authorization : Option[(String, Option[String])],
-    domains : List[String],
-    port : Option[Int],
-    path : Option[List[String]],
-    query : Option[List[(String, Option[String])]],
-    fragment : Option[List[(String, Option[String])]]
-  )
+  scheme : Option[String],
+  authorization : Option[(String, Option[String])],
+  domains : List[String],
+  port : Option[Int],
+  path : Option[List[String]],
+  query : Option[List[(String, Option[String])]],
+  fragment : Option[List[(String, Option[String])]])
 
 /**
  * <p>
@@ -19,7 +19,7 @@ case class UrlTokens(
  * scheme:[//[user:password@]host[:port]][/]path[?query][#fragment]
  * </pre>
  * </p>
- * 
+ *
  * <p>
  * Parsing an URL:
  * </p>
@@ -30,49 +30,50 @@ case class UrlTokens(
  * <li>Divide path by "/"</li>
  * <li>Divide query and fragment by "&" and divide each pair at "=" to get key and optional value</li>
  * <ol>
- * 
+ *
+ * @see http://www.scala-lang.org/files/archive/api/2.11.2/scala-parser-combinators/#scala.util.parsing.combinator.RegexParsers
  */
 class UrlParser extends RegexParsers {
 
-  def expression = all ^^ {
+  private val urlParser = someUrl ^^ {
     case (scheme, ((authorization, domains, port), path, query, fragment)) =>
       new UrlTokens(scheme, authorization, domains, port, path, query, fragment)
   }
-  
-  val notSlash = """[^\/]+""".r 
+
+  val notSlash = """[^\/]+""".r
   val notDot = """[^\.]+""".r
   val notColon = """[^:]+""".r
   val notDotOrColonOrSlashOrQuestionmarkOrHash = """[^:\.\/\?\#]+""".r
   val notAt = """[^@]+""".r
-  val notSlashOrQuestionmark = """[^\/\?]+""".r
+  val notSlashOrQuestionmarkOrHash = """[^\/\?\#]+""".r
   val numbers = """\d+""".r
-  val encoded = """[^\=\&\/\#]+""".r
-  
-  def all = opt(notColon <~ "://") ~ domainAnd ^^ { case optionalScheme ~ domainAnd => (optionalScheme, domainAnd) }
-  
-  def domainAnd = domain ~ opt("/" ~> path) ~ opt("?" ~> query) ~ opt("#" ~> query) ^^ { case domain ~ optionalPath ~ optionalQuery ~ optionalFragment=> (domain, optionalPath, optionalQuery, optionalFragment) }
-  
+  val notEqualsOrAmpersandOrHash = """[^\=\&\/\#]+""".r
+
+  def someUrl = opt(notColon <~ "://") ~ domainAnd ^^ { case optionalScheme ~ domainAnd => (optionalScheme, domainAnd) }
+
+  def domainAnd = domain ~ opt("/" ~> path) ~ opt("?" ~> valuePairs) ~ opt("#" ~> valuePairs) ^^ { case domain ~ optionalPath ~ optionalQuery ~ optionalFragment => (domain, optionalPath, optionalQuery, optionalFragment) }
+
   def domain = opt(authorization <~ "@") ~ domains ~ opt(":" ~> port) ^^ { case optionalAuthorization ~ domains ~ optionalPort => (optionalAuthorization, domains, optionalPort) }
 
   def authorization = notColon ~ opt(":" ~> notAt) ^^ { case user ~ optionalPassword => (user, optionalPassword) }
   def domains = repsep(notDotOrColonOrSlashOrQuestionmarkOrHash, ".")
   def port = numbers ^^ { case number => number.toInt }
-  
-  def path = repsep(notSlashOrQuestionmark | "", "/")
-  def query = repsep(pair, "&")
-  def pair = encoded ~ "=" ~ opt(encoded) ^^ { case key ~ equal ~ optionalValue => (key, optionalValue) }
-  
+
+  def path = repsep(notSlashOrQuestionmarkOrHash | "", "/")
+  def valuePairs = repsep(pair, "&")
+  def pair = notEqualsOrAmpersandOrHash ~ "=" ~ opt(notEqualsOrAmpersandOrHash) ^^ { case key ~ equal ~ optionalValue => (key, optionalValue) }
+
   def apply(url : String) = {
-    parseAll(expression, url) match {
+    parseAll(urlParser, url) match {
       case Success(result, _) => Right(result)
-      case Failure(error, _) => Left(error)
-      case Error(error, _) => Left(error)
+      case Failure(error, _)  => Left(error)
+      case Error(error, _)    => Left(error)
     }
   }
 }
 
 object UrlParser {
   lazy val urlParser = new UrlParser
-  
+
   def apply(url : String) = urlParser(url)
 }
