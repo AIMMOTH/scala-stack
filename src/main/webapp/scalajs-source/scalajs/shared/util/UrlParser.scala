@@ -35,9 +35,9 @@ case class UrlTokens(
  */
 class UrlParser extends RegexParsers {
 
-  private val urlParser = someUrl ^^ {
+  def urlParser = someUrl ^^ {
     case (scheme, ((authorization, domains, port), path, query, fragment)) =>
-      new UrlTokens(scheme, authorization, domains, port, path, query, fragment)
+      Right(new UrlTokens(scheme, authorization, domains, port, path, query, fragment))
   }
 
   val notSlash = """[^\/]+""".r
@@ -45,12 +45,14 @@ class UrlParser extends RegexParsers {
   val notColon = """[^:]+""".r
   val notDotOrColonOrSlashOrQuestionmarkOrHash = """[^:\.\/\?\#]+""".r
   val notAt = """[^@]+""".r
-  val notSlashOrQuestionmarkOrHash = """[^\/\?\#]+""".r
+  val notSlashOrQuestionmarkOrHash = """[^\/\?\#]*""".r
   val numbers = """\d+""".r
   val notEqualsOrAmpersandOrHash = """[^\=\&\/\#]+""".r
 
-  def someUrl = opt(notColon <~ "://") ~ domainAnd ^^ { case optionalScheme ~ domainAnd => (optionalScheme, domainAnd) }
-
+  def someUrl = scheme ~ domainAnd ^^ { case optionalScheme ~ domainAnd => (optionalScheme, domainAnd) }
+  
+  def scheme = opt(notColon <~ "://")
+  
   def domainAnd = domain ~ opt("/" ~> path) ~ opt("?" ~> valuePairs) ~ opt("#" ~> valuePairs) ^^ { case domain ~ optionalPath ~ optionalQuery ~ optionalFragment => (domain, optionalPath, optionalQuery, optionalFragment) }
 
   def domain = opt(authorization <~ "@") ~ domains ~ opt(":" ~> port) ^^ { case optionalAuthorization ~ domains ~ optionalPort => (optionalAuthorization, domains, optionalPort) }
@@ -59,12 +61,15 @@ class UrlParser extends RegexParsers {
   def domains = repsep(notDotOrColonOrSlashOrQuestionmarkOrHash, ".")
   def port = numbers ^^ { case number => number.toInt }
 
-  def path = repsep(notSlashOrQuestionmarkOrHash | "", "/")
+  def path = repsep(notSlashOrQuestionmarkOrHash, "/")
   def valuePairs = repsep(pair, "&")
   def pair = notEqualsOrAmpersandOrHash ~ "=" ~ opt(notEqualsOrAmpersandOrHash) ^^ { case key ~ equal ~ optionalValue => (key, optionalValue) }
 
-  def apply(url : String) = {
-    parseAll(urlParser, url) match {
+  def apply(url : String) = toResult(url, urlParser)
+  def applyWith(url : String, parser : Parser[_]) = toResult(url, parser)
+  
+  def toResult(text : String, parser : Parser[_]) = {
+    parseAll(parser, text) match {
       case Success(result, _) => Right(result)
       case Failure(error, _)  => Left(error)
       case Error(error, _)    => Left(error)
