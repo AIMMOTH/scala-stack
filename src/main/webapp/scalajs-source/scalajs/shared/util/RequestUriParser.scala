@@ -11,13 +11,11 @@ class RequestUriParser extends UrlParser {
 
   def someRequest = "/" ~> opt(path) ~ opt("?" ~> valuePairs) ^^ { case path ~ query => (path, query) }
 
-  def applyOnUri(uri : String) = {
-    parseAll(requestUriParser, uri) match {
+  def applyOnUri(uri : String) = parseAll(requestUriParser, uri) match {
       case Success(result, _)  => Right(result)
       case Failure(failure, _) => Left(failure)
       case Error(error, _)     => Left(error)
     }
-  }
 }
 
 object RequestUriParser {

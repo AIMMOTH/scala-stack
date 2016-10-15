@@ -1,6 +1,4 @@
-package shared
-
-import org.junit.Test
+package scalajs.shared
 
 class TestStylisch {
   

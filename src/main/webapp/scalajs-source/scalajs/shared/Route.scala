@@ -1,53 +1,49 @@
 package scalajs.shared
 
-import scala.Left
-import scala.Right
-
-import scalatags.Text.TypedTag
-import scalajs.shared.html.ClientError
+import scalajs.shared.Languages.Language
 import scalajs.shared.html.Index
-import scalajs.shared.html.ServerError
 import scalajs.shared.util.JsLogger
+import scalajs.shared.util.RequestUriParser
+import scalatags.Text.TypedTag
 
 object Route {
 
+  lazy val pathTo404 = s"/${Languages.default.code}/404"
+  
+  trait RouteResult
+  final case class Redirect(val uri : String, val language : Language = Languages.default) extends RouteResult {
+    lazy val path = s"/${language.code}/$uri/"
+  }
+  final case class Html(file : TypedTag[String]) extends RouteResult
+  final case class JavascriptCompiler() extends RouteResult
+  
+  lazy val javascriptCompiler = new JavascriptCompiler
+  lazy val redirect404 = new Redirect(pathTo404)
+
   /**
-   * Finds a redirect or an HTML page.
+   * Can find a redirect or an HTML page.
    */
-  def apply(uri : String)(implicit logger : JsLogger) : Option[Either[String, TypedTag[String]]] = {
+  def apply(path : String)(implicit logger : JsLogger) : Option[RouteResult] = {
 
-    logger.debug(s"Routing $uri")
+    logger.debug(s"Routing $path")
 
-    implicit def htmlToSomeRight(html : TypedTag[String]) = Some(Right(html))
-    implicit def stringToSomeLeft(redirect : String) = Some(Left(redirect))
+    implicit def resultToOption(result : RouteResult) = Some(result)
 
-    /*
-     * 1 Read uri until '?' 
-     * 2 Split by '/'
-     * 3 Drop first empty string since split on "/path" gives Array("", "path")
-     * 4 To list 
-     */
-    uri.takeWhile(_ != '?').split("/").drop(1).toList match {
-
-      case Nil => Some(Left(s"/${Languages.default.code}/index.min.html")) // Redirect
-
-      case subfolder :: subfolders => subfolder match {
-        case "api"         => None
-        case "favicon.ico" => None
-        case "js"          => None
-        case "css"         => None
-
-        case languageCode => (Languages.all.find(_.code == languageCode), subfolders.head.split(".").toList) match {
-          case (Some(language), fileparts) => fileparts match {
-            case "index" :: _ => Index(new Stylisch, fileparts(0) == "min", language)
-            case "404" :: _   => ClientError.NotFound(language)
-            case "5xx" :: _   => ServerError.InternalServerError(language)
-            case _            => s"/$languageCode/404" // Redirect
-          }
-          case (None, Nil) => s"/${Languages.default.code}/index.min.html" // Unknown language, redirect to index
-          case _           => s"/${Languages.default.code}/404" // Unknown language, redirect
+    RequestUriParser(path) match {
+      case Right((Some(path), _)) => path match {
+        case javascript :: _ if javascript.startsWith("javascript") => javascriptCompiler
+        case "api" :: _ => None
+        case "css" :: _ => None
+        case "favicon.ico" :: _ => None
+        case "js" :: _ => None
+        case languageCode :: file :: Nil => (Languages.all.find(_ == languageCode), file.split(".").toList) match {
+          case (Some(language), "index" :: _) => new Html(Index(new Stylisch, file.endsWith(".min.html"), language))
+          case (Some(language), _ ) => new Redirect(pathTo404, language)
+          case _ => redirect404
         }
+        case _ => redirect404
       }
+      case _ => redirect404
     }
   }
 }

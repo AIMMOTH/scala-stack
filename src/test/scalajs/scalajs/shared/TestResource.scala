@@ -1,9 +1,9 @@
-package shared
+package scalajs.shared
 
 import scalajs.shared._
-import scala.scalajs.js.Dynamic
 import org.junit.Test
 import org.junit.Assert
+import scala.scalajs.js.annotation.JSExportAll
 
 class TestResource {
   
