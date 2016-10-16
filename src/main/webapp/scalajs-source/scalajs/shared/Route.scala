@@ -5,6 +5,8 @@ import scalajs.shared.html.Index
 import scalajs.shared.util.JsLogger
 import scalajs.shared.util.RequestUriParser
 import scalatags.Text.TypedTag
+import scalajs.shared.util.HelperParser
+import scalajs.shared.util.RequestUriTokens
 
 object Route {
 
@@ -30,7 +32,7 @@ object Route {
     implicit def resultToOption(result : RouteResult) = Some(result)
 
     RequestUriParser(path) match {
-      case Right((Some(path), _)) => path match {
+      case Right(RequestUriTokens(Some(path), _)) => HelperParser.splitPathBySlash(path).getOrElse(Nil) match {
         case javascript :: _ if javascript.startsWith("javascript") => javascriptCompiler
         case "api" :: _ => None
         case "css" :: _ => None

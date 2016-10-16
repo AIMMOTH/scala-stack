@@ -1,15 +1,24 @@
 package scalajs.shared.util
 
+import scala.util.parsing.combinator.RegexParsers
+
+case class RequestUriTokens(path : Option[String], query : Option[String])
+
 /**
  * Useful parser when using HttpServletRequest.getRequestUri()
  * 
  * @see javax.servlet.http.HttpServletRequest.getRequestUri()
  */
-class RequestUriParser extends UrlParser {
+class RequestUriParser extends RegexParsers {
 
   private val requestUriParser = someRequest
 
-  def someRequest = "/" ~> opt(path) ~ opt("?" ~> valuePairs) ^^ { case path ~ query => (path, query) }
+  val notQuestionmark = """[^\?]*""".r
+  val any = """.*""".r
+  
+  def someRequest = "/" ~> opt(notQuestionmark) ~ opt("?" ~> any) ^^ {
+    case path ~ query => new RequestUriTokens(path, query)
+  }
 
   def applyOnUri(uri : String) = parseAll(requestUriParser, uri) match {
       case Success(result, _)  => Right(result)

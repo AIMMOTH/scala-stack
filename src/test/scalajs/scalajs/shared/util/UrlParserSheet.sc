@@ -3,13 +3,10 @@ package scalajs.shared.util
 object UrlParserSheet {
   println("Welcome to the Scala worksheet")       //> Welcome to the Scala worksheet
 
-	val parser = new UrlParser                //> parser  : scalajs.shared.util.UrlParser = scalajs.shared.util.UrlParser@5cc7
-                                                  //| c2a6
-
-  parser.apply("hitta://user:password@subdomain.domain.topdomain:123///path?haj=då#saj=kaj") match {
+  scalajs.shared.util.UrlParser("scheme://user:password@subdomain.domain.topdomain:123/path/subpath?key=value&haj#key2=value2&more") match {
     case Right(result) => println(result)
     case Left(error) => println(error)
-  }                                               //> Right(UrlTokens(Some(hitta),Some((user,Some(password))),List(subdomain, doma
-                                                  //| in, topdomain),Some(123),Some(List(, , path)),Some(List((haj,Some(dÃ¥)))),So
-                                                  //| me(List((saj,Some(kaj))))))
+  }                                               //> Right(UrlTokens(scheme,Some((user,Some(password))),Some(subdomain.domain.top
+                                                  //| domain),Some(123),path/subpath,Some(key=value&haj),Some(key2=value2&more)))
+                                                  //| 
 }
