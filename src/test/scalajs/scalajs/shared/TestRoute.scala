@@ -1,4 +1,4 @@
-package scalajs.shared
+package jvm.util
 
 import scalatags.Text.all._
 import org.slf4j.LoggerFactory
@@ -7,6 +7,7 @@ import scalatags.Text._
 import org.junit.Assert
 import scala.xml.XML
 import org.junit.Test
+import scalajs.shared.Route
 
 class TestRoute {
 

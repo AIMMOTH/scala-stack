@@ -2,6 +2,8 @@ package scalajs.shared.util
 
 // https://github.com/scala/scala-parser-combinators
 import scala.util.parsing.combinator.RegexParsers
+import scala.Left
+import scala.Right
 
 case class UrlTokens(
     scheme : String,

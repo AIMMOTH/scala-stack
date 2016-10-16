@@ -1,6 +1,9 @@
 package scalajs.shared.util
 
 import scala.util.parsing.combinator.RegexParsers
+import scala.Left
+import scala.Right
+import scala.scalajs.js.annotation.JSExport
 
 case class RequestUriTokens(path : Option[String], query : Option[String])
 
@@ -9,6 +12,7 @@ case class RequestUriTokens(path : Option[String], query : Option[String])
  * 
  * @see javax.servlet.http.HttpServletRequest.getRequestUri()
  */
+@JSExport
 class RequestUriParser extends RegexParsers {
 
   private val requestUriParser = someRequest
@@ -20,6 +24,7 @@ class RequestUriParser extends RegexParsers {
     case path ~ query => new RequestUriTokens(path, query)
   }
 
+  @JSExport
   def applyOnUri(uri : String) = parseAll(requestUriParser, uri) match {
       case Success(result, _)  =>
         Right(result)

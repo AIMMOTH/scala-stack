@@ -43,6 +43,7 @@ object JavascriptCompiler {
 
     def read(file: String) = {
       log.debug(s"Adding $file to Scala JS compilation.")
+      println(s"Adding $file to Scala JS compilation.")
 
       request.getServletContext.getResourceAsStream(file) match {
         case is => Source.fromInputStream(is).mkString

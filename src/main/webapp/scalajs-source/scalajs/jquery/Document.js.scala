@@ -1,9 +1,12 @@
 package scalajs.jquery
 
-import scala.scalajs.js._
+import scala.scalajs.js.Any.fromBoolean
 import scala.scalajs.js.annotation.JSExport
+import scala.scalajs.js.eval
+
 import org.scalajs.jquery.jQuery
-import scalajs.shared._
+
+import scalajs.shared.Stylisch
 import scalajs.shared.html.Id
 
 @JSExport

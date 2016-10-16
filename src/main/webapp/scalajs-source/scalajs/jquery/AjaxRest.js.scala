@@ -21,12 +21,12 @@ import upickle.default.write
 /**
  * Untested code. Put all logic into FrontendLogic and test it there.
  */
-//@JSExport
+@JSExport
 class AjaxRest extends FrontendLogic {
 
   private lazy implicit val logger = JsLogger(global.console)
   
-//  @JSExport
+  @JSExport
   def doPost() = {
 
     val value = jQuery(s"#${Id.resourcePost.toString}").`val`().toString.toInt

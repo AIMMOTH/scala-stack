@@ -5,10 +5,14 @@ import scalajs.shared.html.Index
 import scalajs.shared.util.JsLogger
 import scalajs.shared.util.RequestUriParser
 import scalatags.Text.TypedTag
-import scalajs.shared.util.HelperParser
 import scalajs.shared.util.RequestUriTokens
 import scalajs.shared.html.ClientError
+import scalajs.shared.Stylisch
+import scalajs.shared.Languages
+import scalajs.shared.util.HelperParser
+import scala.scalajs.js.annotation.JSExport
 
+@JSExport
 object Route {
 
   lazy val pathTo404 = s"/${Languages.default.code}/404"
@@ -26,6 +30,7 @@ object Route {
   /**
    * Can find a redirect or an HTML page.
    */
+//  @JSExport
   def apply(path : String)(implicit logger : JsLogger) : Option[RouteResult] = {
 
     logger.debug(s"Routing $path")

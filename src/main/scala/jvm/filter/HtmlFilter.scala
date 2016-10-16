@@ -23,6 +23,7 @@ import scalajs.shared.util.JsLogger
 import jvm.builder.LoggerBuilder
 import scalajs.shared.util.RequestUriParser
 import java.lang.ProcessBuilder.Redirect
+import scalajs.shared.Route
 
 class HtmlFilter extends Filter {
 
@@ -35,13 +36,22 @@ class HtmlFilter extends Filter {
       implicit def toHttpResponse(response : ServletResponse) = response.asInstanceOf[HttpServletResponse]
 
       logger.info(RequestUriParser(request.getRequestURI).toString)
-      
+
       Route(request.getRequestURI) match {
-        case None => chain.doFilter(request, response)
-        case Some(redirect@Route.Redirect(uri, language)) => response.sendRedirect(redirect.path)
-        case Some(Route.JavascriptCompiler()) => JavascriptCompiler(request, response)
-        case Some(Route.Html(html)) => response.getWriter.println(html.toString)
-        case Some(_) => response.sendRedirect(Route.redirect404.path)
+        case None =>
+          chain.doFilter(request, response)
+          
+        case Some(redirect @ Route.Redirect(uri, language)) =>
+          response.sendRedirect(redirect.path)
+          
+        case Some(Route.JavascriptCompiler()) =>
+          JavascriptCompiler(request, response)
+          
+        case Some(Route.Html(html)) =>
+          response.getWriter.println(html.toString)
+          
+        case Some(_) =>
+          response.sendRedirect(Route.redirect404.path)
       }
 
     } catch {
