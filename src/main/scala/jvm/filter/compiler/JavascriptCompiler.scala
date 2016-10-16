@@ -26,7 +26,9 @@ object JavascriptCompiler {
     s"scalajs-jquery_$versions-0.9.0.jar",
     s"scalatags_$versions-0.6.0.jar",
     s"scalajs-dom_$versions-0.9.1.jar",
-    s"sourcecode_$versions-0.1.1.jar"
+    s"sourcecode_$versions-0.1.1.jar",
+    s"scala-parser-combinators_$versions-1.0.2.jar",
+    s"upickle_$versions-0.4.1.jar"
     )
 
   def apply(request: HttpServletRequest, response: HttpServletResponse) = {

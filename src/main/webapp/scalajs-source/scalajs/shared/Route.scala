@@ -7,6 +7,7 @@ import scalajs.shared.util.RequestUriParser
 import scalatags.Text.TypedTag
 import scalajs.shared.util.HelperParser
 import scalajs.shared.util.RequestUriTokens
+import scalajs.shared.html.ClientError
 
 object Route {
 
@@ -20,7 +21,7 @@ object Route {
   final case class JavascriptCompiler() extends RouteResult
   
   lazy val javascriptCompiler = new JavascriptCompiler
-  lazy val redirect404 = new Redirect(pathTo404)
+  lazy val redirect404 = new Redirect("404")
 
   /**
    * Can find a redirect or an HTML page.
@@ -38,9 +39,10 @@ object Route {
         case "css" :: _ => None
         case "favicon.ico" :: _ => None
         case "js" :: _ => None
-        case languageCode :: file :: Nil => (Languages.all.find(_ == languageCode), file.split(".").toList) match {
+        case languageCode :: file :: _ => (Languages.all.find(_.code == languageCode), file.split("""\.""").toList) match {
           case (Some(language), "index" :: _) => new Html(Index(new Stylisch, file.endsWith(".min.html"), language))
-          case (Some(language), _ ) => new Redirect(pathTo404, language)
+          case (Some(language), "404" :: _) => new Html(ClientError.NotFound(language))
+          case (Some(language), _ ) => new Redirect("404", language)
           case _ => redirect404
         }
         case _ => redirect404

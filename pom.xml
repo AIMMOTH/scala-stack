@@ -14,14 +14,14 @@
   <description>Scala Stack using Google Flexible Environment with backend producing HTML, CSS and JavaScript with out any files (.html, .css, .sass, .less, .js) and with out any frontend builders like Gulp or Grunt.</description>
 
   <url>https://github.com/aimmoth/scala-stack/tree/jquery</url>
-  
+
   <developers>
     <developer>
       <name>Carl Emmoth</name>
       <url>https://github.com/aimmoth</url>
     </developer>
   </developers>
-  
+
   <properties>
     <app.id>iso-scala-us</app.id>
     <app.version>master</app.version>
@@ -121,6 +121,12 @@
       <artifactId>upickle_sjs0.6_2.11</artifactId>
       <version>0.4.1</version>
     </dependency>
+    <dependency>
+      <groupId>org.scala-js</groupId>
+      <artifactId>scala-parser-combinators_sjs0.6_2.11</artifactId>
+      <version>1.0.2</version>
+    </dependency>
+
 
     <dependency>
       <groupId>commons-codec</groupId>
@@ -163,7 +169,7 @@
     <!-- for hot reload of the web application -->
     <outputDirectory>${project.build.directory}/${project.build.finalName}/WEB-INF/classes</outputDirectory>
     <plugins>
-    
+
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>build-helper-maven-plugin</artifactId>
@@ -188,13 +194,13 @@
             </goals>
             <configuration>
               <sources>
-              
+
                 <!-- IMPORTANT -->
                 <!-- This is also set in JavascriptCompiler.scala -->
-              
+
                 <source>src/main/webapp/scalajs-source</source>
-                
-                
+
+
               </sources>
             </configuration>
           </execution>
@@ -224,7 +230,7 @@
           </execution>
         </executions>
       </plugin>
-      
+
       <plugin>
         <groupId>org.scala-tools</groupId>
         <artifactId>maven-scala-plugin</artifactId>
@@ -245,7 +251,7 @@
           </jvmArgs>
         </configuration>
       </plugin>
-      
+
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <version>3.3</version>
@@ -255,7 +261,7 @@
           <target>1.8</target>
         </configuration>
       </plugin>
-      
+
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-war-plugin</artifactId>
@@ -272,7 +278,7 @@
           </webResources>
         </configuration>
       </plugin>
-      
+
       <plugin>
         <groupId>com.google.appengine</groupId>
         <artifactId>gcloud-maven-plugin</artifactId>

@@ -29,12 +29,12 @@ case class UrlTokens(
  * Parsing an URL:
  * </p>
  * <ol>
- * <li>Divide full URL at optional "://" to get scheme and "domain and" (the rest)</li>
- * <li>Divide "domain and" at optional "/" and optional "?" and optional "#" to get domain and/or path and/or query and/or fragment</li>
- * <li>Divide domain to optional authorization, domains and optional port</li>
- * <li>Divide path by "/"</li>
- * <li>Divide query and fragment by "&" and divide each pair at "=" to get key and optional value</li>
+ *   <li>Split by mandatory scheme, optional domain, mandatory path and then optional query and fragment</li>
+ *   <li>If there's a domain split by optional authorization, mandatory domain and optional port</li>
  * <ol>
+ * <p>
+ * Usually a parser is used by greedy regexp matching until a delimiter.
+ * </p>
  *
  * @see http://www.scala-lang.org/files/archive/api/2.11.2/scala-parser-combinators/#scala.util.parsing.combinator.RegexParsers
  */
@@ -55,7 +55,7 @@ class UrlParser extends RegexParsers {
   val notAt = """[^@]+""".r
   val notColonOrSlash = """[^:\/]+""".r
   val numbers = """\d+""".r
-  val notQuestionmarkOrHash = """[^\?#]*""".r
+  val notQuestionmarkOrHash = """[^\?#]+""".r
   val notHash = """[^\#]*""".r
   val any = """.*""".r
 
@@ -83,6 +83,20 @@ class UrlParser extends RegexParsers {
   }
 }
 
+object UrlParser {
+  lazy val urlParser = new UrlParser
+
+  def apply(url : String) = urlParser(url)
+}
+
+/**
+ * Parse common patterns.
+ * <ul>
+ *   <li>Split domain with dot</li>
+ *   <li>Split path with slash</li>
+ *   <li>Split query or fragment with ampersand and then create value pairs by split by equals</li>
+ * </ul>
+ */
 object HelperParser extends RegexParsers {
 
   implicit def parserToOption[T](parserResult : ParseResult[T]) = parserResult match {
@@ -107,11 +121,5 @@ object HelperParser extends RegexParsers {
    * Split by ambersand (&) and then equals (=)
    */
   def splitIntoValuePairs(text : String) : Option[List[(String, Option[String])]] = parseAll(valuePairs, text)
-}
-
-object UrlParser {
-  lazy val urlParser = new UrlParser
-
-  def apply(url : String) = urlParser(url)
 }
 

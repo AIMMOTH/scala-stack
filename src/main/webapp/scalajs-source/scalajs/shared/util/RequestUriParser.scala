@@ -21,9 +21,12 @@ class RequestUriParser extends RegexParsers {
   }
 
   def applyOnUri(uri : String) = parseAll(requestUriParser, uri) match {
-      case Success(result, _)  => Right(result)
-      case Failure(failure, _) => Left(failure)
-      case Error(error, _)     => Left(error)
+      case Success(result, _)  =>
+        Right(result)
+      case Failure(failure, _) =>
+        Left(failure)
+      case Error(error, _)     =>
+        Left(error)
     }
 }
 

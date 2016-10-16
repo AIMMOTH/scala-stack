@@ -4,8 +4,8 @@ object TestRoutSheet {
   println("Welcome to the Scala worksheet")       //> Welcome to the Scala worksheet
   
   val test = new TestRoute                        //> test  : scalajs.shared.TestRoute = scalajs.shared.TestRoute@617c74e5
-  test.testRoute                                  //> java.lang.Exception: /en-gb/404
-                                                  //| 	at scalajs.shared.TestRoute.testRoute(TestRoute.scala:28)
+  test.testRoute                                  //> java.lang.Exception: No match
+                                                  //| 	at scalajs.shared.TestRoute.testRoute(TestRoute.scala:26)
                                                   //| 	at scalajs.shared.TestRoutSheet$$anonfun$main$1.apply$mcV$sp(scalajs.sha
                                                   //| red.TestRoutSheet.scala:7)
                                                   //| 	at org.scalaide.worksheet.runtime.library.WorksheetSupport$$anonfun$$exe
