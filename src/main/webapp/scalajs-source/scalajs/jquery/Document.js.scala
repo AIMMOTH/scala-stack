@@ -22,8 +22,8 @@ class Document {
     // Use this to get names of styling classes
     val styling = new Stylisch
     
-    jQuery(s"#${Id.javascriptAlert.toString}").addClass(s"${styling.hidden.name}")
-    jQuery(s"#${Id.resourcePostButton.toString}").prop("disabled", false)
-    jQuery(s"#${Id.resourceGetButton.toString}").prop("disabled", false)
+    jQuery("#" + Id.javascriptAlert).addClass(s"${styling.hidden.name}")
+    jQuery("#" + Id.resourcePostButton).prop("disabled", false)
+    jQuery("#" + Id.resourceGetButton).prop("disabled", false)
   }
 }

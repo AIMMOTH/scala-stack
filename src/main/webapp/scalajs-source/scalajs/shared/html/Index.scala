@@ -41,7 +41,7 @@ object Index {
         div(cls := "row")(
           div(cls := "large-12 columns")(
 
-            div(cls := "callout alert", id := Id.javascriptAlert.toString())(
+            div(cls := "callout alert", id := Id.javascriptAlert.toString)(
               h5("Compiling Scala JS to JavaScript ..."),
               p("Backend is now compiling Scala JS source code into a JavaScript, it should take a few seconds. Buttons are disabled in the meanwhile.")),
 
@@ -49,14 +49,14 @@ object Index {
 
             h2("POST Resource"),
             p("Enter number and create a resource!")(
-              input(type_ := "number", value := 1, id := Id.resourcePost.toString()),
+              input(type_ := "number", value := 1, id := Id.resourcePost.toString),
               input(type_ := "button", onclick := postFunction, value := "POST", cls := "button", disabled := true, id := Id.resourcePostButton.toString())),
 
             h2("GET Resource"),
             p("Enter an id (already filled in if you recently posted one resource) and GET it")(
-              input(type_ := "number", id := Id.resourceGet.toString()),
+              input(type_ := "number", id := Id.resourceGet.toString),
               input(type_ := "button", onclick := getFunction, value := "GET", cls := "button", disabled := true, id := Id.resourceGetButton.toString()),
-              textarea(disabled := true, id := Id.resourceOutput.toString())),
+              textarea(disabled := true, id := Id.resourceOutput.toString)),
 
             p("Source at ")(a(target := "_blank", href := "https://github.com/AIMMOTH/scala-stack/tree/jquery")("GitHub")),
 
