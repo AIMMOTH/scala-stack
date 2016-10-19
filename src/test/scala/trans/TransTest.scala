@@ -21,27 +21,26 @@ import scalajs.shared.util.KO
 import jvm.builder.LoggerBuilder
 
 class TransTest {
-  
-  class TestFrontendLogic extends FrontendLogic
-  class TestBackendLogic extends BackendLogic
-  
+
   lazy val gson = new Gson
   val logger = LoggerFactory.getLogger(getClass)
   implicit def jsLogger = LoggerBuilder(logger)
   val helper = new LocalServiceTestHelper()
   var closable : Closeable = null
-  
-  @Before def before : Unit = {
-    helper.setUp();
+
+  @Before
+  def before : Unit = {
+    helper.setUp()
     Objectify.registerClasses()
     closable = ObjectifyService.begin()
   }
-  
-  @After def after : Unit = {
+
+  @After
+  def after : Unit = {
     closable.close()
     helper.tearDown()
   }
-  
+
   /**
    * Test
    * <ol>
@@ -53,28 +52,29 @@ class TransTest {
    */
   @Test
   def post : Unit = {
-    val frontend = new TestFrontendLogic
-    val backend = new TestBackendLogic
-    
-    frontend.post(22, resource => {
-      backend.create(gson.toJson(resource)) match {
+
+    FrontendLogic.post(22, resource => {
+      BackendLogic.create(gson.toJson(resource)) match {
         case OK(resourceEntity) =>
           Assert.assertTrue(resourceEntity.r.x == 22)
           Assert.assertTrue(resourceEntity.id != null)
-          
+
           val long = resourceEntity.id
-          
-          frontend.get(resourceEntity.id, long => ()) match {
-            case OK(unit) => 
-              backend.read(resourceEntity.id) match {
-              case OK(entity) =>
-              Assert.assertTrue(resourceEntity.id == entity.id)
-              case KO(throwable) => throw throwable
+
+          FrontendLogic.get(resourceEntity.id, long => ()) match {
+            case OK(unit) =>
+              BackendLogic.read(resourceEntity.id) match {
+                case OK(entity) =>
+                  Assert.assertTrue(resourceEntity.id == entity.id)
+                case KO(throwable) =>
+                  throw throwable
               }
-            case KO(throwable) => throw throwable
+            case KO(throwable) =>
+              throw throwable
           }
-          
-        case KO(throwable) => throw throwable
+
+        case KO(throwable) =>
+          throw throwable
       }
     })
   }

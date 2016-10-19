@@ -14,7 +14,7 @@ import scalajs.shared.util.JsLogger
 /**
  * Logic to test
  */
-trait BackendLogic {
+object BackendLogic {
 
   private lazy val gson = new Gson
 
@@ -35,7 +35,8 @@ trait BackendLogic {
   
       OK(entity)
     } catch {
-      case t : Throwable => KO(t)
+      case t : Throwable =>
+        KO(t)
     }
   }
   
@@ -43,7 +44,8 @@ trait BackendLogic {
     try {
       OK(Objectify.load.key(Key.create(classOf[ResourceEntity], id)).safe)
     } catch {
-      case throwable : Throwable => KO(throwable)
+      case throwable : Throwable =>
+        KO(throwable)
     }
   }
 }

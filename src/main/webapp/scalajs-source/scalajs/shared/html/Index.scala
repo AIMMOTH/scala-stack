@@ -11,7 +11,6 @@ import scalatags.Text.all.{ `type` => type_ }
 import scalatags.Text.tags2.{ style => style2, title => title2 }
 
 object Id extends Enumeration {
-  type Id = Value
   val javascriptAlert, resourcePostButton, resourceGetButton, resourcePost, resourceGet, resourceOutput = Value
 }
 

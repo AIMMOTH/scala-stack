@@ -6,7 +6,7 @@ import scalajs.shared.util.OK
 import scalajs.shared.util.KO
 import scalajs.shared.util.JsLogger
 
-trait FrontendLogic {
+object FrontendLogic {
   
   def post(value : Integer, postAction : Resource => Unit)(implicit logger : JsLogger) : Validated[Throwable, Unit] = {
     
