@@ -2,7 +2,6 @@ package scalajs.shared.html
 
 import scalatags.Text.all._
 import scalatags.stylesheet._
-//import scalajs.jquery.AjaxRest
 import scalajs.shared.Languages
 import scalajs.shared.Stylisch
 import scalajs.shared.Translations
@@ -22,7 +21,7 @@ object Index {
 
 //    val postFunction = methodPath(classOf[scalajs.jquery.AjaxRest], "doPost") // scalajs.jquery.AjaxRest().doPost()
 //    val getFunction = methodPath(classOf[scalajs.jquery.AjaxRest], "doGet") // scalajs.jquery.AjaxRest().doGet()
-//    val documentReady = methodPath(classOf[scalajs.jquery.Document], "ready") // scalajs.jquery.Document().ready()
+    val documentReady = methodPath(classOf[scalajs.angular.Document], "ready") // scalajs.jquery.Document().ready()
 
     val min = if (minified) ".min" else ""
 
@@ -67,14 +66,10 @@ object Index {
             script(src := "/js/vendor/jquery.js"),
             script(src := "/js/vendor/what-input.js"),
             script(src := s"/js/vendor/foundation$min.js"),
-            script(src := s"/javascript-${System.currentTimeMillis()}$min.js")
-//            ,
+            script(src := s"/javascript-${System.currentTimeMillis()}$min.js"),
             /*
        * Start Foundation
        */
-//            script()(documentReady)
-            )
-            )
-            ))
+            script()(documentReady)))))
   }
 }

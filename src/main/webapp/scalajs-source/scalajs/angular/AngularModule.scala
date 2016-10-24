@@ -1,4 +1,4 @@
-package script
+package scalajs.angular
 
 import biz.enef.angulate.angular
 
