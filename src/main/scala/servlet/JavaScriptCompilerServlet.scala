@@ -9,6 +9,8 @@ import fiddle.Optimizer
 import scala.io.Source
 import java.util.logging.Logger
 import org.slf4j.LoggerFactory
+import com.github.aimmoth.fiddle.ScalaJsCompiler
+import com.github.aimmoth.fiddle.Optimizer
 
 @WebServlet(name = "javaScriptCompilerServlet", urlPatterns = Array("/javascript.js"))
 class JavaScriptCompilerServlet extends HttpServlet {

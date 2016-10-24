@@ -1,4 +1,4 @@
-package shared
+package scalajs.shared
 
 import scalatags.Text.all._
 import scalatags.stylesheet.StyleSheet
