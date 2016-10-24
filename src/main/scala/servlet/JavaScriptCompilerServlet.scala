@@ -3,9 +3,9 @@ package servlet
 import javax.servlet.annotation.WebServlet
 import javax.servlet.http.HttpServletResponse
 import javax.servlet.http.HttpServletRequest
-import fiddle.ScalaJsCompiler
+import com.github.aimmoth.fiddle.ScalaJsCompiler
 import javax.servlet.http.HttpServlet
-import fiddle.Optimizer
+import com.github.aimmoth.fiddle.Optimizer
 import scala.io.Source
 import java.util.logging.Logger
 import org.slf4j.LoggerFactory
