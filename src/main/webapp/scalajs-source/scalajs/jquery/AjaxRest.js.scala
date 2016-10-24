@@ -14,7 +14,7 @@ import scalajs.shared.Resource
 import scalajs.shared.util.OK
 import scalajs.shared.util.KO
 import scalajs.jquery.logic.FrontendLogic
-import scalajs.shared.html.Id
+import scalajs.shared.html.ElementId
 import scalajs.shared.util.JsLogger
 import upickle.default.write
 
@@ -31,7 +31,7 @@ class AjaxRest {
   @JSExport
   def doPost() = {
 
-    val value = jQuery("#" + Id.resourcePost).`val`().toString.toInt
+    val value = jQuery("#" + ElementId.resourcePost).`val`().toString.toInt
 
     /*
      * Post action is using jQuery ajax and defining success and error.
@@ -45,7 +45,7 @@ class AjaxRest {
           method = "POST",
           success = { (data : JsAny, textStatus : String, jqXHR : JQueryXHR) =>
 
-            jQuery("#" + Id.resourceGet).`val`(JSON.stringify(data))
+            jQuery("#" + ElementId.resourceGet).`val`(JSON.stringify(data))
             alert("OK")
           },
           error = { (jqXhr : JQueryXHR, textStatus : String, errorThrown : String) =>
@@ -64,14 +64,14 @@ class AjaxRest {
   @JSExport
   def doGet() = {
 
-    val id = jQuery(s"#${Id.resourceGet}").`val`().toString.toLong
+    val id = jQuery("#" + ElementId.resourceGet).`val`().toString.toLong
 
     val getAction : Long => Unit = id => jQuery.ajax(
       "/api/v1/resource/" + id,
       settings = literal(
         success = { (data : JsAny, textStatus : String, jqXHR : JQueryXHR) =>
 
-          jQuery("#" + Id.resourceOutput).`val`(JSON.stringify(data))
+          jQuery("#" + ElementId.resourceOutput).`val`(JSON.stringify(data))
           alert("OK")
         },
         error = { (jqXhr : JQueryXHR, textStatus : String, errorThrown : String) =>

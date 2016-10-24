@@ -7,7 +7,7 @@ import scala.scalajs.js.eval
 import org.scalajs.jquery.jQuery
 
 import scalajs.shared.Stylisch
-import scalajs.shared.html.Id
+import scalajs.shared.html.ElementId
 
 @JSExport
 class Document {
@@ -22,8 +22,8 @@ class Document {
     // Use this to get names of styling classes
     val styling = new Stylisch
     
-    jQuery("#" + Id.javascriptAlert).addClass(s"${styling.hidden.name}")
-    jQuery("#" + Id.resourcePostButton).prop("disabled", false)
-    jQuery("#" + Id.resourceGetButton).prop("disabled", false)
+    jQuery("#" + ElementId.javascriptAlert).addClass(s"${styling.hidden.name}")
+    jQuery("#" + ElementId.resourcePostButton).prop("disabled", false)
+    jQuery("#" + ElementId.resourceGetButton).prop("disabled", false)
   }
 }
