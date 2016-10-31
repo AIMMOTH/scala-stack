@@ -29,7 +29,6 @@ object Route {
   /**
    * Can find a redirect or an HTML page.
    */
-  //  @JSExport
   def apply(path : String)(implicit logger : JsLogger) : Option[RouteResult] = {
 
     logger.debug(s"Routing $path")

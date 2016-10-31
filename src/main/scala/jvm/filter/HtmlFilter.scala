@@ -25,6 +25,9 @@ import scalajs.shared.util.RequestUriParser
 import java.lang.ProcessBuilder.Redirect
 import scalajs.shared.Route
 
+/**
+ * Catch all filter for html, css, api, Javascript compiler, 404 etc
+ */
 class HtmlFilter extends Filter {
 
   implicit val logger = LoggerBuilder(LoggerFactory.getLogger(getClass))

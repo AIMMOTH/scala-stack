@@ -47,16 +47,13 @@ object Index {
 
             h2("POST Resource"),
             p("Enter number and create a resource!")(
-              input(type_ := "number", value := 1, id := Id.resourcePost.toString)
-//              ,
-//              input(type_ := "button", onclick := postFunction, value := "POST", cls := "button", disabled := true, id := Id.resourcePostButton.toString())
+              input(type_ := "number", value := 1, id := ElementId.resourcePost.toString)
               ),
 
             h2("GET Resource"),
             p("Enter an id (already filled in if you recently posted one resource) and GET it")(
-              input(type_ := "number", id := Id.resourceGet.toString),
-//              input(type_ := "button", onclick := getFunction, value := "GET", cls := "button", disabled := true, id := Id.resourceGetButton.toString()),
-              textarea(disabled := true, id := Id.resourceOutput.toString)),
+              input(type_ := "number", id := ElementId.resourceGet.toString),
+              textarea(disabled := true, id := ElementId.resourceOutput.toString)),
 
             p("Source at ")(a(target := "_blank", href := "https://github.com/AIMMOTH/scala-stack/tree/jquery")("GitHub")),
 
