@@ -3,10 +3,10 @@ package example
 import javax.servlet.annotation.WebServlet
 import javax.servlet.http.HttpServletResponse
 import javax.servlet.http.HttpServletRequest
-import fiddle.ScalaJsCompiler
+import com.github.aimmoth.scala.compiler.jetty.ScalaJsCompiler
 import javax.servlet.http.HttpServlet
-import fiddle.Optimizer
 import scala.io.Source
+import com.github.aimmoth.scala.compiler.jetty.Optimizer
 
 @WebServlet(name = "javascriptCompiler", urlPatterns = Array("/javascript.js"))
 class ScalaCompiler extends HttpServlet {
