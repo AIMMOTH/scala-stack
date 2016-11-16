@@ -1,4 +1,4 @@
-# ISO SCALA
+# SCALA STACK
 
 Backend serve HTML, JavaScript and CSS from Scala! No frontend build (gulp, grun), no files (js, css, html, sass, less)!
 
@@ -16,7 +16,7 @@ Check out [live](https://iso-scala-us.appspot.com/)
 
 ## Run and Deploy
 
-This project is dependent on a second project [servlet-scalajs-compiler](https://github.com/AIMMOTH/scala-js-compiler/tree/servlet-compiler). Either clone and install it with maven or use copy of JAR included in src/main/resources.
+This project is dependent on a second project [scalajs-compiler-jetty](https://github.com/AIMMOTH/scalajs-compiler-jetty). Either clone and install it with maven or use copy of JAR included in src/main/resources.
 
 Use maven and run $ mvn gcloud:run or $ mvn gcloud:deploy. Make sure to have GCloud installed and Python on path!
 
